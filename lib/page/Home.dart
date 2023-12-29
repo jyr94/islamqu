@@ -63,12 +63,11 @@ class _homePage extends State<HomePage> {
 
   Future<void> _getAddressFromLatLng(Position position) async {
     print(position);
-    // await placemarkFromCoordinates(
-    //     _currentPosition!.latitude, _currentPosition!.longitude)
-    //     .then((List<Placemark> placemarks) {
-    //   Placemark place = placemarks[0];
-      print("calll uy");
-      // print(_currentPosition!.latitude);
+    await placemarkFromCoordinates(
+        _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+
       final myCoordinates =
       Coordinates(_currentPosition!.latitude,_currentPosition!.longitude); // Replace with your own location lat, lng.
       final params = CalculationMethod.muslim_world_league.getParameters();
@@ -76,12 +75,12 @@ class _homePage extends State<HomePage> {
       final prayerTimes = PrayerTimes.today(myCoordinates, params);
       
       setState(() {
-        // _currentAddress =
-        // '${place.subLocality}, ${place.subAdministrativeArea}';
-        // _city = '${place.subLocality}';
+        _currentAddress =
+        '${place.subLocality}, ${place.subAdministrativeArea}';
+        _city = '${place.subLocality}';
 
 
-         // _prefs.setString('_prefCurrentAddress', _currentAddress);
+         _prefs.setString('_prefCurrentAddress', _currentAddress);
         this.preferences?.setString('_prefCurrentAddress',_currentAddress?? "-");
         this.preferences?.setString('_city', _city ?? "ok");
         this.preferences?.setDouble('_preflatitude', _currentPosition!.latitude);
@@ -93,9 +92,8 @@ class _homePage extends State<HomePage> {
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.dhuhr);
             DateTime? now = DateTime.now();
             var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
-            print(dhuhr);
              _notificationService.scheduleNotification(
-                id: 1,
+                id: 2,
                 title: _nextPrayerName,
                 body: _nextPrayerName,
                 scheduledNotificationDateTime:dhuhr
@@ -103,18 +101,50 @@ class _homePage extends State<HomePage> {
             break;
           case "fajr":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.fajr);
+            DateTime? now = DateTime.now();
+            var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.fajr.minute );
+            _notificationService.scheduleNotification(
+                id: 1,
+                title: _nextPrayerName,
+                body: _nextPrayerName,
+                scheduledNotificationDateTime:dhuhr
+            );
             break;
           case "asr":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.asr);
+            DateTime? now = DateTime.now();
+            var asr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.asr.minute );
+            _notificationService.scheduleNotification(
+                id: 3,
+                title: _nextPrayerName,
+                body: _nextPrayerName,
+                scheduledNotificationDateTime:asr
+            );
             break;
           case "maghrib":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.maghrib);
+            DateTime? now = DateTime.now();
+            var maghrib = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
+            _notificationService.scheduleNotification(
+                id: 4,
+                title: _nextPrayerName,
+                body: _nextPrayerName,
+                scheduledNotificationDateTime:maghrib
+            );
             break;
           case "isha":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.isha);
+            DateTime? now = DateTime.now();
+            var isha = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.isha.minute );
+            _notificationService.scheduleNotification(
+                id: 5,
+                title: _nextPrayerName,
+                body: _nextPrayerName,
+                scheduledNotificationDateTime:isha
+            );
             break;
           case "sunrise":
-            _nextPrayer = DateFormat('HH:mm').format(prayerTimes.sunrise);
+            _nextPrayerName="";
             break;
           case "none":
             _nextPrayerName="";
