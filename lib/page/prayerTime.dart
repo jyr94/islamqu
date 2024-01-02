@@ -43,7 +43,7 @@ class _PrayerTimeState extends State<PrayerTime> {
     final myCoordinates =
     Coordinates(latitude!,longitude!); // Replace with your own location lat, lng.
     final params = CalculationMethod.muslim_world_league.getParameters();
-    params.madhab = Madhab.hanafi;
+    params.madhab = Madhab.shafi;
     print('_getPrayTime');
 
     if (currentPage>0){
@@ -59,6 +59,8 @@ class _PrayerTimeState extends State<PrayerTime> {
       final date = DateComponents.from(now);
       _datePrayer=dateFormatter(now);
       _prayerTimes = PrayerTimes.utc(myCoordinates,date, params);
+      final test = PrayerTimes.today(myCoordinates, params);
+      print(test.asr);
     }
 
 
@@ -89,10 +91,6 @@ class _PrayerTimeState extends State<PrayerTime> {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        // title: Text(
-        //   'Jadwal Sholat',
-        //   style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
-        // ),
         title: Column(children: [
           Text(
             "Jadwal Sholat",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
@@ -101,7 +99,6 @@ class _PrayerTimeState extends State<PrayerTime> {
           preferences?.getString("_city") ?? "",style: TextStyle(color: Colors.green[900],fontSize: 12),
         ),
         ]),
-
       ),
       ///A Page View with 3 children
       body: PageView(

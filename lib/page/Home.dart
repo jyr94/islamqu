@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
+import 'dart:core';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:adhan/adhan.dart';
@@ -9,6 +10,13 @@ import 'package:islamqu/helper/NotificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
+import 'package:timeline_list/timeline.dart';
+import 'package:timeline_list/timeline_model.dart';
+import 'package:islamqu/api/prayer.dart';
+import 'package:islamqu/model/prayer.dart';
+import 'dart:convert';
+import 'package:islamqu/page/dailyPrayerDetail.dart';
+import 'package:islamqu/page/qiblah.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,6 +34,7 @@ class _homePage extends State<HomePage> {
   String? _nextPrayerName;
   String? _city;
   String? _name;
+  Future<List<DailyPrayer>>? dailyPrayer;
 
   Future<void>initializePreference() async {
     this.preferences = await SharedPreferences.getInstance();
@@ -62,7 +71,7 @@ class _homePage extends State<HomePage> {
   }
 
   Future<void> _getAddressFromLatLng(Position position) async {
-    print(position);
+    // print(position);
     await placemarkFromCoordinates(
         _currentPosition!.latitude, _currentPosition!.longitude)
         .then((List<Placemark> placemarks) {
@@ -71,7 +80,7 @@ class _homePage extends State<HomePage> {
       final myCoordinates =
       Coordinates(_currentPosition!.latitude,_currentPosition!.longitude); // Replace with your own location lat, lng.
       final params = CalculationMethod.muslim_world_league.getParameters();
-      params.madhab = Madhab.hanafi;
+      params.madhab = Madhab.shafi;
       final prayerTimes = PrayerTimes.today(myCoordinates, params);
       
       setState(() {
@@ -80,68 +89,70 @@ class _homePage extends State<HomePage> {
         _city = '${place.subLocality}';
 
 
-         _prefs.setString('_prefCurrentAddress', _currentAddress);
+         // _prefs.setString('_prefCurrentAddress', _currentAddress);
         this.preferences?.setString('_prefCurrentAddress',_currentAddress?? "-");
         this.preferences?.setString('_city', _city ?? "ok");
         this.preferences?.setDouble('_preflatitude', _currentPosition!.latitude);
         this.preferences?.setDouble('_preflongitude', _currentPosition!.longitude);
         _nextPrayerName=prayerTimes.nextPrayer().name;
-        print(_nextPrayerName);
+        DateTime? now = DateTime.now();
+
+        var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
+        _notificationService.scheduleNotification(
+            id: 2,
+            title: "dhuhr",
+            body: "dhuhr",
+            scheduledNotificationDateTime:dhuhr
+        );
+        var fajr = DateTime(now.year, now.month,  now.day ,prayerTimes.fajr.hour,prayerTimes.fajr.minute );
+        _notificationService.scheduleNotification(
+            id: 1,
+            title: "shubuh",
+            body: "shubuh",
+            scheduledNotificationDateTime:fajr
+        );
+        var asr = DateTime(now.year, now.month,  now.day ,prayerTimes.asr.hour,prayerTimes.asr.minute );
+        _notificationService.scheduleNotification(
+            id: 3,
+            title: "ashar",
+            body: "ashar",
+            scheduledNotificationDateTime:asr
+        );
+
+        var maghrib = DateTime(now.year, now.month,  now.day ,prayerTimes.maghrib.hour,prayerTimes.maghrib.minute );
+        _notificationService.scheduleNotification(
+            id: 4,
+            title: "maghrib",
+            body: "maghrib",
+            scheduledNotificationDateTime:maghrib
+        );
+
+        var isha = DateTime(now.year, now.month,  now.day ,prayerTimes.isha.hour,prayerTimes.isha.minute );
+        _notificationService.scheduleNotification(
+            id: 5,
+            title: "isha",
+            body: "isha",
+            scheduledNotificationDateTime:isha
+        );
+
         switch(_nextPrayerName) {
           case "dhuhr":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.dhuhr);
-            DateTime? now = DateTime.now();
-            var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
-             _notificationService.scheduleNotification(
-                id: 2,
-                title: _nextPrayerName,
-                body: _nextPrayerName,
-                scheduledNotificationDateTime:dhuhr
-            );
+
             break;
           case "fajr":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.fajr);
-            DateTime? now = DateTime.now();
-            var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.fajr.minute );
-            _notificationService.scheduleNotification(
-                id: 1,
-                title: _nextPrayerName,
-                body: _nextPrayerName,
-                scheduledNotificationDateTime:dhuhr
-            );
+
+
             break;
           case "asr":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.asr);
-            DateTime? now = DateTime.now();
-            var asr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.asr.minute );
-            _notificationService.scheduleNotification(
-                id: 3,
-                title: _nextPrayerName,
-                body: _nextPrayerName,
-                scheduledNotificationDateTime:asr
-            );
             break;
           case "maghrib":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.maghrib);
-            DateTime? now = DateTime.now();
-            var maghrib = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
-            _notificationService.scheduleNotification(
-                id: 4,
-                title: _nextPrayerName,
-                body: _nextPrayerName,
-                scheduledNotificationDateTime:maghrib
-            );
             break;
           case "isha":
             _nextPrayer = DateFormat('HH:mm').format(prayerTimes.isha);
-            DateTime? now = DateTime.now();
-            var isha = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.isha.minute );
-            _notificationService.scheduleNotification(
-                id: 5,
-                title: _nextPrayerName,
-                body: _nextPrayerName,
-                scheduledNotificationDateTime:isha
-            );
             break;
           case "sunrise":
             _nextPrayerName="";
@@ -153,9 +164,9 @@ class _homePage extends State<HomePage> {
           default:
         }
       });
-    // }).catchError((e) {
-    //   debugPrint(e);
-    // });
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 
   void _permission() async {
@@ -176,15 +187,13 @@ class _homePage extends State<HomePage> {
     super.initState();
     print("masukkk page home");
     _permission();
+    dailyPrayer=fetchPrayerDaily();
     initializePreference().whenComplete((){
       setState(() {
         print(preferences?.getString("name"));
         print(preferences?.getDouble("_preflatitude"));
       });
     });
-
-
-
   }
 
 
@@ -205,7 +214,7 @@ class _homePage extends State<HomePage> {
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
                   child:  Text(
-                    '${this.preferences?.getDouble("_preflatitude")}',
+                    '${this.preferences?.getString("_city")}',
                     // '${_currentAddress ?? ""}',
                     // 'test',
                     style: TextStyle(
@@ -286,11 +295,17 @@ class _homePage extends State<HomePage> {
             margin: EdgeInsets.all(20.0),
               child: Icon(FlutterIslamicIcons.quran2,size: 50)
           ),
-          Container(
-            // color: Colors.purple,
-            margin: EdgeInsets.all(20.0),
-              child: Icon(FlutterIslamicIcons.qibla,size: 50)
+          GestureDetector(
+            child: Container(
+              // color: Colors.purple,
+                margin: EdgeInsets.all(20.0),
+                child: Icon(FlutterIslamicIcons.qibla,size: 50)
+            ),
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>QiblaCompass()));
+            },
           ),
+
           Container(
             // color: Colors.purple,
             margin: EdgeInsets.all(20.0),
@@ -299,6 +314,107 @@ class _homePage extends State<HomePage> {
         ],
       ),
     );
+    Widget DailyPrayerTitle=Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Text(
+       "Doa Harian",
+        textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.black.withOpacity(0.9),fontSize: 15,fontWeight: FontWeight.bold),
+      ),
+    );
+    Widget timelineTest=FutureBuilder(
+        future: dailyPrayer,
+        builder: (context, snapshot) {
+         if (snapshot.hasError) print(snapshot.error);
+          return snapshot.hasData
+            ? Timeline.builder(
+              shrinkWrap: true,
+              iconSize: 10,
+              position: TimelinePosition.Left,
+              itemCount: snapshot.requireData.length,
+              itemBuilder: (context,index){
+                return TimelineModel(
+                    GestureDetector(
+                      child:   Container(
+                        // height: 100,
+                        child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              title:  Text(snapshot.requireData[index].title),
+                              // subtitle: Text(
+                              //   'Secondary Text',
+                              //   style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                              // ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                 snapshot.requireData[index].arab,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child:
+                              Text(
+                                snapshot.requireData[index].latin.length > 50 ? snapshot.requireData[index].latin.substring(0, 50)+'  ....' : snapshot.requireData[index].latin,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                              ),
+                            ),
+                            if(snapshot.requireData[index].latin.length < 50)...[
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16,top: 1,bottom: 1),
+                                child: Text(
+                                  "artinya",
+                                  textAlign: TextAlign.left,
+
+                                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  snapshot.requireData[index].arti,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                                ),
+                              ),
+                            ]else...[
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16,top: 1,bottom: 5),
+                                child: Text(
+                                  "Lanjutkan",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ]
+
+
+                          ],
+                        ),
+                      ),
+                      ),
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DailyPrayerDetail(dailyPrayer: snapshot.data![index])));
+                      },
+                    ),
+
+                  icon: Icon(Icons.bubble_chart),
+                  iconBackground: Colors.white,
+                );
+              })
+            : Center(child: CircularProgressIndicator());
+      },
+    );
+
+
+
     return Scaffold(
       appBar: AppBar(
 
@@ -311,14 +427,22 @@ class _homePage extends State<HomePage> {
         ),
 
       ),
-        body: ListView(
-          children: [
-            HeaderSection,
-            titleSections,
-            MenuSection
-          ],
+        body: SafeArea(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              HeaderSection,
+              titleSections,
+              MenuSection,
+              DailyPrayerTitle,
+              timelineTest
+            ],
+          ),
+
         ),
 
     );
   }
 }
+
+
