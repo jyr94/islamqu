@@ -302,7 +302,7 @@ class _homePage extends State<HomePage> {
                 child: Icon(FlutterIslamicIcons.qibla,size: 50)
             ),
             onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>QiblaCompass()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Qiblah()));
             },
           ),
 
