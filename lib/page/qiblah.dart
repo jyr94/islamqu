@@ -19,7 +19,7 @@ class _Qiblah extends State<Qiblah> {
         centerTitle: true,
         title: Column(children: [
           Text(
-            "Jadwal Sholat",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
+            "Qiblat",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
           ),
         ]),
       ),

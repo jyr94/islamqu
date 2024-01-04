@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 import 'dart:core';
@@ -17,7 +17,9 @@ import 'package:islamqu/model/prayer.dart';
 import 'dart:convert';
 import 'package:islamqu/page/dailyPrayerDetail.dart';
 import 'package:islamqu/page/qiblah.dart';
-
+import 'package:islamqu/page/daily_prayer.dart';
+import 'package:islamqu/helper/SquareButton.dart';
+import 'package:islamqu/helper/utils.dart';
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _homePage();
@@ -280,37 +282,88 @@ class _homePage extends State<HomePage> {
           ],
         )
     );
+    Route _createRoute(Widget page) {
+      return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>  page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 1.0);
+          const end = Offset.zero;
+          const curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      );
+    }
 
     Widget MenuSection=Container(
+      margin: EdgeInsets.only(left: 20,right: 20),
       child: Row(
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            // color: Colors.orange,
-            margin: EdgeInsets.only(left: 20,top: 0),
-            child: Icon(FlutterIslamicIcons.tasbihHand,size: 50)
-          ),
-          Container(
-            // color: Colors.blue,
-            margin: EdgeInsets.all(20.0),
-              child: Icon(FlutterIslamicIcons.quran2,size: 50)
-          ),
-          GestureDetector(
-            child: Container(
-              // color: Colors.purple,
-                margin: EdgeInsets.all(20.0),
-                child: Icon(FlutterIslamicIcons.qibla,size: 50)
-            ),
-            onTap: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Qiblah()));
+          // Container(
+          //   // color: Colors.orange,
+          //   margin: EdgeInsets.only(left: 20,top: 0),
+          //   child: Icon(FlutterIslamicIcons.tasbihHand,size: 50,color: Colors.green[900])
+          // ),
+          SquareButton(
+            icon: Icon(FlutterIslamicIcons.quran2),
+            label: 'AlQuran',
+            onPressed: (){
+              Navigator.of(context).push(_createRoute(DailyPrayerPage()));
             },
           ),
-
-          Container(
-            // color: Colors.purple,
-            margin: EdgeInsets.all(20.0),
-            child: Icon(FlutterIslamicIcons.hadji,size: 50)
+          SquareButton(
+            icon: Icon(FlutterIslamicIcons.prayer),
+            label: 'Doa',
+            onPressed: (){
+              Navigator.of(context).push(_createRoute(DailyPrayerPage()));
+            },
           ),
+          SquareButton(
+            icon: Icon(FlutterIslamicIcons.qibla),
+            label: 'Qiblat',
+            onPressed: (){
+              Navigator.of(context).push(_createRoute(Qiblah()));
+            },
+          ),
+          SquareButton(
+            icon: Icon(FlutterIslamicIcons.tasbihHand),
+            label: 'Tashbih',
+            onPressed: (){
+              Navigator.of(context).push(_createRoute(DailyPrayerPage()));
+            },
+          ),
+          // Container(
+          //   // color: Colors.blue,
+          //   margin: EdgeInsets.all(20.0),
+          //     child: Icon(FlutterIslamicIcons.quran2,size: 50,color: Colors.green[900])
+          // ),
+          // GestureDetector(
+          //   child: Container(
+          //     // color: Colors.purple,
+          //       margin: EdgeInsets.all(20.0),
+          //       child: Icon(FlutterIslamicIcons.qibla,size: 50,color: Colors.green[900])
+          //   ),
+          //   onTap: (){
+          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Qiblah()));
+          //   },
+          // ),
+          // GestureDetector(
+          //   child:Container(
+          //     // color: Colors.purple,
+          //       margin: EdgeInsets.all(20.0),
+          //       child: Icon(FlutterIslamicIcons.prayer,size: 50,color: Colors.green[900])
+          //   ),
+          //   onTap: (){
+          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DailyPrayerPage()));
+          //   },
+          // )
+
         ],
       ),
     );
@@ -394,8 +447,6 @@ class _homePage extends State<HomePage> {
                                 ),
                               ),
                             ]
-
-
                           ],
                         ),
                       ),

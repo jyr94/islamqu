@@ -12,6 +12,9 @@ import 'package:islamqu/page/notif.dart';
 import 'package:islamqu/helper/NotificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:islamqu/page/prayerTime.dart';
+import 'package:islamqu/page/qiblah.dart';
+import 'package:islamqu/page/daily_prayer.dart';
+
 
 
 
@@ -73,10 +76,9 @@ class _BottomNavigationBarExampleState
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static  List<Widget> _widgetOptions = <Widget>[
-
     HomePage(),
     LocationPage(),
-    NotifPage(),
+    Qiblah(),
     PrayerTime(),
 
   ];

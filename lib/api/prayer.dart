@@ -32,6 +32,17 @@ Future<List<DailyPrayer>> fetchPrayerDaily() async {
   }
   // return null
 }
+Future<List<DailyPrayer>> fetchPrayerDailyAll() async {
+  final response = await http.get(Uri.parse("https://gist.githubusercontent.com/jeri06/5fc3f5e482e7f53f8dfec907e5c047d8/raw/ae160ff7f3092564240194d6695ae9e6df3c03a7/json")
+  );
+
+  if (response.statusCode == 200) {
+    return decodeDailyPrayer(response.body);
+  } else {
+    throw Exception('Unable to fetch data from the REST API');
+  }
+  // return null
+}
 List<DailyPrayer> decodeDailyPrayer(String responseBody) {
   // print(json.decode(responseBody).cast<Map<String, dynamic>>().);
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
