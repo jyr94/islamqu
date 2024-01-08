@@ -20,6 +20,8 @@ import 'package:islamqu/page/qiblah.dart';
 import 'package:islamqu/page/daily_prayer.dart';
 import 'package:islamqu/helper/SquareButton.dart';
 import 'package:islamqu/helper/utils.dart';
+import 'package:islamqu/helper/ads.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _homePage();
@@ -28,7 +30,8 @@ class HomePage extends StatefulWidget {
 
 class _homePage extends State<HomePage> {
   NotificationService _notificationService = NotificationService();
-
+  late BannerAd _bannerAd;
+  bool _isBannerAdReady = false;
   SharedPreferences? preferences;
   String? _currentAddress ="";
   Position? _currentPosition;
@@ -42,7 +45,27 @@ class _homePage extends State<HomePage> {
     this.preferences = await SharedPreferences.getInstance();
     this.preferences?.setString("name", "Peter");
   }
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.adaptiveBannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.mediumRectangle,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print(err);
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
 
+    _bannerAd.load();
+  }
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -187,6 +210,7 @@ class _homePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // _loadBannerAd();
     print("masukkk page home");
     _permission();
     dailyPrayer=fetchPrayerDaily();
@@ -198,12 +222,17 @@ class _homePage extends State<HomePage> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _bannerAd.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    ScrollController _controller = new ScrollController();
     Widget titleSections = Container(
       // color: Colors.red,
-
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
@@ -338,32 +367,6 @@ class _homePage extends State<HomePage> {
               Navigator.of(context).push(_createRoute(DailyPrayerPage()));
             },
           ),
-          // Container(
-          //   // color: Colors.blue,
-          //   margin: EdgeInsets.all(20.0),
-          //     child: Icon(FlutterIslamicIcons.quran2,size: 50,color: Colors.green[900])
-          // ),
-          // GestureDetector(
-          //   child: Container(
-          //     // color: Colors.purple,
-          //       margin: EdgeInsets.all(20.0),
-          //       child: Icon(FlutterIslamicIcons.qibla,size: 50,color: Colors.green[900])
-          //   ),
-          //   onTap: (){
-          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Qiblah()));
-          //   },
-          // ),
-          // GestureDetector(
-          //   child:Container(
-          //     // color: Colors.purple,
-          //       margin: EdgeInsets.all(20.0),
-          //       child: Icon(FlutterIslamicIcons.prayer,size: 50,color: Colors.green[900])
-          //   ),
-          //   onTap: (){
-          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DailyPrayerPage()));
-          //   },
-          // )
-
         ],
       ),
     );
@@ -380,13 +383,32 @@ class _homePage extends State<HomePage> {
         builder: (context, snapshot) {
          if (snapshot.hasError) print(snapshot.error);
           return snapshot.hasData
-            ? Timeline.builder(
+            ?
+          ListView.separated(
+              physics:  NeverScrollableScrollPhysics(),
+              controller: _controller,
+              scrollDirection: Axis.vertical,
               shrinkWrap: true,
-              iconSize: 10,
-              position: TimelinePosition.Left,
               itemCount: snapshot.requireData.length,
+              padding:  const EdgeInsets.all(16.0),
+              separatorBuilder: (context,index){
+               if ((index + 1) % 4 == 0 && _isBannerAdReady) {
+                  return Align(
+
+                     alignment: Alignment.bottomCenter,
+                     child: Container(
+                       width: _bannerAd.size.width.toDouble(),
+                       height: _bannerAd.size.height.toDouble(),
+                       // child: AdWidget(ad: _bannerAd),
+                       child: AdWidget(ad: _bannerAd),
+                     ),
+                   );
+               }else{
+                return Container();
+               }
+              },
               itemBuilder: (context,index){
-                return TimelineModel(
+               return
                     GestureDetector(
                       child:   Container(
                         // height: 100,
@@ -397,10 +419,6 @@ class _homePage extends State<HomePage> {
                           children: [
                             ListTile(
                               title:  Text(snapshot.requireData[index].title),
-                              // subtitle: Text(
-                              //   'Secondary Text',
-                              //   style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                              // ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -454,11 +472,7 @@ class _homePage extends State<HomePage> {
                       onTap: (){
                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DailyPrayerDetail(dailyPrayer: snapshot.data![index])));
                       },
-                    ),
-
-                  icon: Icon(Icons.bubble_chart),
-                  iconBackground: Colors.white,
-                );
+                    );
               })
             : Center(child: CircularProgressIndicator());
       },
@@ -487,6 +501,7 @@ class _homePage extends State<HomePage> {
               MenuSection,
               DailyPrayerTitle,
               timelineTest
+
             ],
           ),
 

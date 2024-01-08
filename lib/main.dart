@@ -14,14 +14,33 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:islamqu/page/prayerTime.dart';
 import 'package:islamqu/page/qiblah.dart';
 import 'package:islamqu/page/daily_prayer.dart';
-
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:islamqu/helper/ads.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   NotificationService().init();
+  try{
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+    FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
+    // FlutterError.onError =
+    //     FirebaseCrashlytics.instance.recordFlutterFatalError;
 
+    // adsHelper.init();
+  }catch(e) {
+    print("ERRRO FIREBASE: $e");
+  }
+
+  // FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   runApp(const MyApp());
 }
 
@@ -32,6 +51,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
   // This widget is the root of your application.
 
+
 }
 
 class _MyAppState extends State<MyApp> {
@@ -41,6 +61,10 @@ class _MyAppState extends State<MyApp> {
     print("masukkk");
 
     super.initState();
+    FirebaseAnalytics.instance.setUserProperty(name: "testing", value: "test");
+    FirebaseAnalytics.instance.setCurrentScreen(screenName: "Home");
+
+
   }
 
   @override
