@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:islamqu/api/prayer.dart';
 import 'package:islamqu/model/prayer.dart';
 import 'package:islamqu/page/dailyPrayerDetail.dart';
+import 'package:islamqu/helper/ads.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class DailyPrayerPage extends StatefulWidget {
   DailyPrayerPage({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class DailyPrayerPage extends StatefulWidget {
 class _DailyPrayer extends State<DailyPrayerPage> {
   Future<List<DailyPrayer>>? dailyPrayer;
   TextEditingController editingController = TextEditingController();
+  late BannerAd _bannerAd;
+  bool _isBannerAdReady = false;
 
   var items = <DailyPrayer>[];
   var items2 = <DailyPrayer>[];
@@ -24,14 +28,42 @@ class _DailyPrayer extends State<DailyPrayerPage> {
 
     items2=temp;
   }
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.adaptiveBannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.mediumRectangle,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isBannerAdReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print(err);
+          _isBannerAdReady = false;
+          ad.dispose();
+        },
+      ),
+    );
+
+    _bannerAd.load();
+  }
   @override
   void initState() {
     // dailyPrayer=fetchPrayerDailyAll();
     // items = dailyPrayer;
-    dailyPrayertoList();
     super.initState();
+    // _loadBannerAd();
+    dailyPrayertoList();
 
   }
+  @override
+  void dispose() {
+    super.dispose();
+    // _bannerAd.dispose();
+  }
+
   void filterSearchResults(String query) {
     setState(() {
       items = items2
@@ -71,7 +103,7 @@ class _DailyPrayer extends State<DailyPrayerPage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
                     itemCount: items.length,
                     shrinkWrap: true,
                     itemBuilder: (context,index) {
@@ -154,7 +186,23 @@ class _DailyPrayer extends State<DailyPrayerPage> {
                                   DailyPrayerDetail(dailyPrayer: items[index])));
                         },
                       );
-                    }),
+                    },
+                separatorBuilder: (context,index){
+                  if (index== 4 && _isBannerAdReady) {
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: _bannerAd.size.width.toDouble(),
+                        height: _bannerAd.size.height.toDouble(),
+                        // child: AdWidget(ad: _bannerAd),
+                        child: AdWidget(ad: _bannerAd),
+                      ),
+                    );
+                  }else{
+                    return Container();
+                  }
+                },
+                    ),
             ),
           ],
         ),
