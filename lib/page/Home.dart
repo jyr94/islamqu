@@ -22,6 +22,9 @@ import 'package:islamqu/helper/SquareButton.dart';
 import 'package:islamqu/helper/utils.dart';
 import 'package:islamqu/helper/ads.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:islamqu/api/surah.dart';
+import 'package:islamqu/page/list_surah.dart';
+
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _homePage();
@@ -213,6 +216,7 @@ class _homePage extends State<HomePage> {
     // _loadBannerAd();
     print("masukkk page home");
     _permission();
+    readJsonAllSurah();
     dailyPrayer=fetchPrayerDaily();
     initializePreference().whenComplete((){
       setState(() {
@@ -225,7 +229,7 @@ class _homePage extends State<HomePage> {
   @override
   void dispose() {
     super.dispose();
-    _bannerAd.dispose();
+    // _bannerAd.dispose();
   }
 
   @override
@@ -343,7 +347,7 @@ class _homePage extends State<HomePage> {
             icon: Icon(FlutterIslamicIcons.quran2),
             label: 'AlQuran',
             onPressed: (){
-              Navigator.of(context).push(_createRoute(DailyPrayerPage()));
+              Navigator.of(context).push(_createRoute(ListSurahPage()));
             },
           ),
           SquareButton(
