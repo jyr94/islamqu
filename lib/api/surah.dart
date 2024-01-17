@@ -11,3 +11,12 @@ Future<List<AllSurah>> readJsonAllSurah() async {
   return datas["data"].map<AllSurah>((json) =>AllSurah.fromJson(json)).toList();
 
 }
+Future<List<DetailAyat>> readJsonSurah(String surah) async {
+  final String url='assets/surah/${surah}.json';
+  final String response = await rootBundle.loadString(url);
+  // print(url);
+  final datas = await json.decode(response);
+  // print(datas);
+  return datas.map<DetailAyat>((json) =>DetailAyat.fromJson(json)).toList();
+
+}

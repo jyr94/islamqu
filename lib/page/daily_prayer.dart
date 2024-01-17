@@ -4,6 +4,8 @@ import 'package:islamqu/model/prayer.dart';
 import 'package:islamqu/page/dailyPrayerDetail.dart';
 import 'package:islamqu/helper/ads.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:islamqu/helper/analytics.dart';
 
 class DailyPrayerPage extends StatefulWidget {
   DailyPrayerPage({Key? key}) : super(key: key);
@@ -56,6 +58,7 @@ class _DailyPrayer extends State<DailyPrayerPage> {
     super.initState();
     // _loadBannerAd();
     dailyPrayertoList();
+    AnalyticsService.observer.analytics.setCurrentScreen(screenName: "dailyprayer");
 
   }
   @override

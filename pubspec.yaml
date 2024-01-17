@@ -58,6 +58,8 @@ dependencies:
   firebase_analytics: ^10.8.0
   firebase_crashlytics: ^3.4.9
   google_mobile_ads: ^4.0.0
+  arabic_numbers: ^1.0.0
+  arabic_font: ^0.0.9
 
 dev_dependencies:
   flutter_test:
