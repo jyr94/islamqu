@@ -6,6 +6,7 @@ import 'package:islamqu/helper/ads.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:islamqu/api/surah.dart';
 import 'package:islamqu/model/surah.dart';
+import 'package:islamqu/page/read_alquran.dart';
 
 class ListSurahPage extends StatefulWidget {
   ListSurahPage({Key? key}) : super(key: key);
@@ -131,10 +132,10 @@ class _ListSurahPage extends State<ListSurahPage> {
       // trailing:
       // Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => DetailPage(lesson: lesson)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ReadQuranPage(surah:model)));
       },
     );
 

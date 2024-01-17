@@ -24,6 +24,12 @@ import 'package:islamqu/helper/ads.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:islamqu/api/surah.dart';
 import 'package:islamqu/page/list_surah.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:islamqu/helper/analytics.dart';
+// import 'package:number_to_word_arabic/number_to_word_arabic.dart';
+import 'package:islamqu/helper/utils.dart';
+import 'package:arabic_numbers/arabic_numbers.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -43,6 +49,7 @@ class _homePage extends State<HomePage> {
   String? _city;
   String? _name;
   Future<List<DailyPrayer>>? dailyPrayer;
+  final arabicNumber = ArabicNumbers();
 
   Future<void>initializePreference() async {
     this.preferences = await SharedPreferences.getInstance();
@@ -213,6 +220,7 @@ class _homePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService.observer.analytics.setCurrentScreen(screenName: "main2");
     // _loadBannerAd();
     print("masukkk page home");
     _permission();
@@ -378,6 +386,7 @@ class _homePage extends State<HomePage> {
       padding: const EdgeInsets.all(16.0),
       child: Text(
        "Doa Harian",
+       //  arabicNumber.convert(1),
         textAlign: TextAlign.center,
         style: TextStyle(color: Colors.black.withOpacity(0.9),fontSize: 15,fontWeight: FontWeight.bold),
       ),

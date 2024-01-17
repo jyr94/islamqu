@@ -3,14 +3,17 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:islamqu/page/loading_indicator.dart';
 import 'package:islamqu/page/qiblah_compass.dart';
 import 'package:islamqu/page/qiblah_maps.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class Qiblah extends StatefulWidget {
   Qiblah({Key? key}) : super(key: key);
+
   @override
   _Qiblah createState() => _Qiblah();
 }
 
 class _Qiblah extends State<Qiblah> {
+
   final _deviceSupport = FlutterQiblah.androidDeviceSensorSupport();
   @override
   Widget build(BuildContext context) {

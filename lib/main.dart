@@ -20,6 +20,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 // import 'package:islamqu/helper/ads.dart';
+import 'package:islamqu/helper/analytics.dart';
+
 
 
 void main() async{
@@ -30,10 +32,10 @@ void main() async{
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(false);
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
     FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
-    // FlutterError.onError =
-    //     FirebaseCrashlytics.instance.recordFlutterFatalError;
+    FlutterError.onError =
+        FirebaseCrashlytics.instance.recordFlutterFatalError;
 
     // adsHelper.init();
   }catch(e) {
@@ -61,9 +63,10 @@ class _MyAppState extends State<MyApp> {
     print("masukkk");
 
     super.initState();
-    FirebaseAnalytics.instance.setUserProperty(name: "testing", value: "test");
-    FirebaseAnalytics.instance.setCurrentScreen(screenName: "Home");
-
+    // FirebaseAnalytics.instance.setUserProperty(name: devic);
+    //
+    // FirebaseAnalytics.instance.logAppOpen();
+    AnalyticsService.observer.analytics.setCurrentScreen(screenName: "main");
 
   }
 
