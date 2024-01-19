@@ -8,6 +8,7 @@ import 'package:islamqu/api/surah.dart';
 import 'package:islamqu/model/surah.dart';
 // import 'package:arabic_font/arabic_font.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ReadQuranPage extends StatefulWidget {
   ReadQuranPage({Key? key,required this.surah}) : super(key: key);
@@ -22,6 +23,9 @@ class _ReadQuranPage extends State<ReadQuranPage> {
   late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
   bool _isLoading=false;
+  // ScrollController _controller= new ScrollController();
+  final ItemScrollController itemScrollController = ItemScrollController();
+
 
   var items = <DetailAyat>[];
   var items2 = <DetailAyat>[];
@@ -59,13 +63,23 @@ class _ReadQuranPage extends State<ReadQuranPage> {
 
     _bannerAd.load();
   }
+  _ScrollPosition() async {
+    // print( _controller.offset);
+  }
   @override
   void initState() {
     // dailyPrayer=fetchPrayerDailyAll();
     // items = dailyPrayer;
+    // _controller.jumpTo(100.0);
     super.initState();
     // _loadBannerAd();
     allSurahToList();
+    // itemScrollController.jumpTo(index: 10);
+    // _controller = ScrollController(initialScrollOffset: 4603.865718818734 ?? 0.0);
+    // _controller.addListener((){
+    //   _ScrollPosition();
+    // });
+
 
 
   }
@@ -79,45 +93,9 @@ class _ReadQuranPage extends State<ReadQuranPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).copyWith(dividerColor: Colors.transparent);
-    ListTile makeListTile(DetailAyat ayat) => ListTile(
+    ListTile makeListTile(DetailAyat ayat,int index) => ListTile(
       contentPadding:
       EdgeInsets.symmetric(horizontal: 20.0, vertical: 1.0),
-      // leading: Container(
-      //     padding: EdgeInsets.only(right: 12.0),
-      //     decoration: new BoxDecoration(
-      //         border: new Border(
-      //             right: new BorderSide(width: 1.0, color: Colors.white24))),
-          // child: Stack(
-          //     children: [
-                // Image.asset(
-                //   "assets/brsurah.png",
-                //   height: 50, // device or widget height
-                //   width: 50, // device or widget height
-                //   // centerSlice: const Rect.fromLTRB(115, 115, 358, 555),
-                // ), // your border image
-                // Container(
-                //   // color: Colors.red,
-                //   height: 40,
-                //   width: 40,
-                //   margin: EdgeInsets.only(left: 6,top: 4),
-                //   child:Align(
-                //     alignment: Alignment.center,
-                //     child: Text(
-                //       '${ayat.arabic}'' ',
-                //       style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold,fontSize: 20),),
-                //   ),
-                // ) // other widgets inside border
-              // ]
-          // )
-        // Text(
-        //     '${model.id}''. ',
-        //   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 15),),
-      // ),
-      // title: TextSpan(
-      //   text: '${ayat.arabic}',
-      //   // textAlign: TextAlign.right,
-      //   style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 35,letterSpacing: 0.0),
-      // ),
       title: RichText(
         textAlign: TextAlign.right,
 
@@ -126,22 +104,6 @@ class _ReadQuranPage extends State<ReadQuranPage> {
             style: GoogleFonts.scheherazadeNew(
                 textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 30,letterSpacing: 0.0)
             ),
-          // children: [
-          //
-          //   WidgetSpan(
-          //     child: Padding(
-          //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          //       child: Image.asset(
-          //         "assets/brsurah.png",
-          //         width: 30,
-          //       ),),),
-          //   // TextSpan(
-          //   //     text: ayat.arabic,
-          //   //     style: GoogleFonts.scheherazadeNew(
-          //   //         textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 30,letterSpacing: 0.0)
-          //   //     )
-          //   // ),
-          // ],
 
         ),
       ),
@@ -160,7 +122,7 @@ class _ReadQuranPage extends State<ReadQuranPage> {
           //     )),
           Container(
             // tag: 'hero',
-            child: Text(ayat.latin,
+            child: Text('${ayat.ayah.toString()}. ${ayat.latin}',
                 style: TextStyle(color: Colors.black,fontSize: 15,fontStyle: FontStyle.italic)),
           ),
           Container(
@@ -174,10 +136,11 @@ class _ReadQuranPage extends State<ReadQuranPage> {
       // trailing:
       // Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
       onTap: () {
+        print(index);
       },
     );
 
-    Card makeCard(DetailAyat ayat) => Card(
+    Card makeCard(DetailAyat ayat,int index) => Card(
       elevation: 1.0,
       margin: new EdgeInsets.symmetric(horizontal: 1.0, vertical: 1.0),
       child:
@@ -185,7 +148,7 @@ class _ReadQuranPage extends State<ReadQuranPage> {
         decoration: BoxDecoration(color: Colors.white,
             borderRadius: BorderRadius.circular(1)
         ),
-        child: makeListTile(ayat),
+        child: makeListTile(ayat,index),
       ),
     );
     return Scaffold(
@@ -254,11 +217,15 @@ class _ReadQuranPage extends State<ReadQuranPage> {
                 child: CircularProgressIndicator(),
               )): Container(),
               Expanded(
-                child: ListView.builder(
+                child: ScrollablePositionedList.builder(
+                  // reverse: true,
+                  // controller: _controller,
+                  itemScrollController: itemScrollController,
                   itemCount: items.length,
                   shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
                   itemBuilder: (context,index) {
-                    return makeCard(items[index]);
+                    return makeCard(items[index],index);
                     // return Text(items[index].latin);
 
                   },
