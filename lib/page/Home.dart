@@ -10,8 +10,6 @@ import 'package:islamqu/helper/NotificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
-import 'package:timeline_list/timeline.dart';
-import 'package:timeline_list/timeline_model.dart';
 import 'package:islamqu/api/prayer.dart';
 import 'package:islamqu/model/prayer.dart';
 import 'dart:convert';

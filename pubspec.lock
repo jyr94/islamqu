@@ -648,14 +648,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.7"
-  pray_times:
-    dependency: "direct main"
-    description:
-      name: pray_times
-      sha256: e807912049967e0e55aba9c0177bc3beda2cf33e7c4948f3bcd2f66ecc486f31
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1"
   push:
     dependency: "direct main"
     description:
@@ -720,6 +712,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  scrollable_positioned_list:
+    dependency: "direct main"
+    description:
+      name: scrollable_positioned_list
+      sha256: "1b54d5f1329a1e263269abc9e2543d90806131aa14fe7c6062a8054d57249287"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.8"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -845,14 +845,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
-  timeline_list:
-    dependency: "direct main"
-    description:
-      name: timeline_list
-      sha256: ef1dff1f1d0b9daf8350635594f2b33c52b12410771bf12a8d5976c1aac156c4
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.6"
   timezone:
     dependency: "direct main"
     description:
