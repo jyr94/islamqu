@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:islamqu/model/prayer.dart';
+import 'package:islamqu/helper/analytics.dart';
 class DailyPrayerDetail extends StatefulWidget{
 
   const DailyPrayerDetail({Key? key,required this.dailyPrayer}) : super(key: key);
@@ -14,7 +15,8 @@ class DailyPrayerDetail extends StatefulWidget{
 class _dailyPrayerDetail extends State<DailyPrayerDetail> {
   @override
   void initState() {
-
+    super.initState();
+    AnalyticsService.observer.analytics.setCurrentScreen(screenName: "detail_prayer");
   }
 
   @override
