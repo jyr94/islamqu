@@ -7,6 +7,7 @@ import 'package:islamqu/page/loading_indicator.dart';
 import 'package:islamqu/page/location_error_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:islamqu/helper/analytics.dart';
 
 class QiblahCompass extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _QiblahCompassState extends State<QiblahCompass> {
   @override
   void initState() {
     super.initState();
+    AnalyticsService.observer.analytics.setCurrentScreen(screenName: "qiblah_compas");
     _checkLocationStatus();
   }
 

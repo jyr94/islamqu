@@ -7,6 +7,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:islamqu/api/surah.dart';
 import 'package:islamqu/model/surah.dart';
 import 'package:islamqu/page/read_alquran.dart';
+import 'package:islamqu/helper/analytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ListSurahPage extends StatefulWidget {
   ListSurahPage({Key? key}) : super(key: key);
@@ -19,6 +22,12 @@ class _ListSurahPage extends State<ListSurahPage> {
   TextEditingController editingController = TextEditingController();
   late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
+  SharedPreferences? preferences;
+  late int? _bookmarkAyat=0;
+  late int? _bookmarkSurah;
+  late String? _bookmarkSurahName;
+  late String? _bookmarkSuraharab;
+  late int? num=0;
 
   var items = <AllSurah>[];
   var items2 = <AllSurah>[];
@@ -31,6 +40,7 @@ class _ListSurahPage extends State<ListSurahPage> {
 
     items2=temp;
   }
+
   void _loadBannerAd() {
     _bannerAd = BannerAd(
       adUnitId: AdHelper.adaptiveBannerAdUnitId,
@@ -52,14 +62,40 @@ class _ListSurahPage extends State<ListSurahPage> {
 
     _bannerAd.load();
   }
+  Future<void>initializePreference() async {
+    this.preferences = await SharedPreferences.getInstance();
+  }
+  void refreshbookmark(){
+    setState(() {
+      _bookmarkAyat=preferences?.getInt("_bookmarkAyat");
+      _bookmarkSurah=preferences?.getInt("_bookmarkSurah");
+      _bookmarkSurahName=preferences?.getString('_bookmarkSurahName');
+      _bookmarkSuraharab=preferences?.getString('_bookmarkSuraArab');
+
+      // print(object)
+      // _bookmarkAyat.
+      print("bookmark save");
+      print(_bookmarkAyat);
+
+    });
+   print("jerii");
+  }
+
   @override
   void initState() {
     // dailyPrayer=fetchPrayerDailyAll();
     // items = dailyPrayer;
     super.initState();
     // _loadBannerAd();
+    print("call iniit state");
     allSurahToList();
-
+    _bookmarkSurah=null;
+    AnalyticsService.observer.analytics.setCurrentScreen(screenName: "list_surah");
+    initializePreference().whenComplete((){
+      setState(() {
+        refreshbookmark();
+      });
+    });
   }
   @override
   void dispose() {
@@ -135,7 +171,7 @@ class _ListSurahPage extends State<ListSurahPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ReadQuranPage(surah:model)));
+                builder: (context) => ReadQuranPage(surah:model,callback: refreshbookmark)));
       },
     );
 
@@ -176,6 +212,53 @@ class _ListSurahPage extends State<ListSurahPage> {
                           borderRadius: BorderRadius.all(Radius.circular(25.0)))),
                 ),
               ),
+              if(_bookmarkSurah!=null)...[
+                GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child:  ListTile(
+                      leading: Icon(Icons.bookmark),
+                      title: Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                // tag: 'hero',
+                                child:   Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+
+                                    Container(
+                                      // tag: 'hero',
+                                      child: Text('${_bookmarkSurahName}',
+                                          style: TextStyle(color: Colors.black,fontSize: 15,fontStyle: FontStyle.italic)),
+                                    ),
+                                    Container(
+                                      // tag: 'hero',
+                                      child: Text('${_bookmarkSuraharab}',
+                                          style: TextStyle(color: Colors.black45,fontSize: 15)),
+                                    ),
+
+                                  ],
+                                ),
+                              )),
+                        ],
+                      ),
+                      subtitle: Text("terakhir dibaca ayat ${_bookmarkAyat!!+1}"),
+                      trailing: Icon(Icons.arrow_forward),
+                    ),
+                  ),
+                  onTap: (){
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => ReadQuranPage(surah:model,callback: refreshbookmark)));
+                  },
+                )
+
+              ],
+
               Expanded(
                 child: ListView.separated(
                   itemCount: items.length,
@@ -206,5 +289,7 @@ class _ListSurahPage extends State<ListSurahPage> {
         )
 
     );
+
   }
+
 }
