@@ -21,6 +21,10 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 // import 'package:islamqu/helper/ads.dart';
 import 'package:islamqu/helper/analytics.dart';
+import 'package:islamqu/page/list_surah.dart';
+import 'package:islamqu/page/prayerTime.dart';
+import 'package:islamqu/page/setting.dart';
+import 'package:islamqu/helper/constant.dart';
 
 
 
@@ -104,9 +108,9 @@ class _BottomNavigationBarExampleState
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static  List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    LocationPage(),
-    Qiblah(),
     PrayerTime(),
+    Qiblah(),
+    SettingPage(),
 
   ];
 
@@ -120,29 +124,19 @@ class _BottomNavigationBarExampleState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //
-      //   title: Align(
-      //     alignment: Alignment.centerLeft,
-      //     child: Text(
-      //       "Islam Qu",
-      //       style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
-      //     ),
-      //   ),
-      //
-      // ),
+
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.mosque),
+            icon: Icon(FlutterIslamicIcons.lantern),
             label: 'test',
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.quran2),
+            icon: Icon(FlutterIslamicIcons.kowtow),
             label: 'Search',
             backgroundColor: Colors.white,
           ),
@@ -153,14 +147,14 @@ class _BottomNavigationBarExampleState
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.sajadah),
-            label: 'Favorite',
-            // backgroundColor: Colors.white,
+            icon: Icon(FlutterIslamicIcons.muslim2),
+            label: 'Pengaturan',
+            backgroundColor: Colors.white,
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green[900],
-        unselectedItemColor: Colors.green,
+        selectedItemColor: mainColor,
+        unselectedItemColor: unselectColor,
         showSelectedLabels:false,
         showUnselectedLabels: false,
         onTap: _onItemTapped,

@@ -6,6 +6,7 @@ import 'package:islamqu/helper/ads.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:islamqu/helper/analytics.dart';
+import 'package:islamqu/helper/constant.dart';
 
 class DailyPrayerPage extends StatefulWidget {
   DailyPrayerPage({Key? key}) : super(key: key);
@@ -82,7 +83,7 @@ class _DailyPrayer extends State<DailyPrayerPage> {
         centerTitle: true,
         title: Column(children: [
           Text(
-            "Doa Harian",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
+            "Doa Harian",style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),
           ),
         ]),
       ),

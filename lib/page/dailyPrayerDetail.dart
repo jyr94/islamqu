@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:islamqu/model/prayer.dart';
 import 'package:islamqu/helper/analytics.dart';
+import 'package:islamqu/helper/constant.dart';
+import 'package:google_fonts/google_fonts.dart';
 class DailyPrayerDetail extends StatefulWidget{
 
   const DailyPrayerDetail({Key? key,required this.dailyPrayer}) : super(key: key);
@@ -26,19 +28,20 @@ class _dailyPrayerDetail extends State<DailyPrayerDetail> {
         centerTitle: true,
         title: Column(children: [
           Text(
-            "Doa Harian",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
+            "Doa Harian",style: TextStyle(color:mainColor,fontWeight: FontWeight.bold),
           ),
 
         ]),
       ),
       body: SafeArea(
-        child:Card(
-          clipBehavior: Clip.antiAlias,
+        child:Container(
+          // clipBehavior: Clip.antiAlias,
+          color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                title:  Text(this.widget.dailyPrayer.title),
+                title:  Text(this.widget.dailyPrayer.title,style: TextStyle(fontSize: 20),),
                 // subtitle: Text(
                 //   'Secondary Text',
                 //   style: TextStyle(color: Colors.black.withOpacity(0.6)),
@@ -49,7 +52,8 @@ class _dailyPrayerDetail extends State<DailyPrayerDetail> {
                 child: Text(
                   this.widget.dailyPrayer.arab,
                   textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                  style: GoogleFonts.scheherazadeNew(
+                      textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 20,letterSpacing: 0.0),),
                 ),
               ),
               Padding(

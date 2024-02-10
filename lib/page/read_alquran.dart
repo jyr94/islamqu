@@ -14,9 +14,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:islamqu/page/list_surah.dart';
 
 class ReadQuranPage extends StatefulWidget {
-  ReadQuranPage({Key? key,required this.surah,required this.callback}) : super(key: key);
+  ReadQuranPage({Key? key,required this.surah,required this.callback,this.bookmarkPosition}) : super(key: key);
   final AllSurah surah;
   final Function callback;
+  final int? bookmarkPosition;
   @override
   _ReadQuranPage createState() => _ReadQuranPage();
 }
@@ -28,8 +29,13 @@ class _ReadQuranPage extends State<ReadQuranPage> {
   bool _isBannerAdReady = false;
   bool _isLoading=false;
   // ScrollController _controller= new ScrollController();
-  final ItemScrollController itemScrollController = ItemScrollController();
+
   SharedPreferences? preferences;
+
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ScrollOffsetController scrollOffsetController = ScrollOffsetController();
+  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final ScrollOffsetListener scrollOffsetListener = ScrollOffsetListener.create();
 
 
   var items = <DetailAyat>[];
@@ -51,7 +57,7 @@ class _ReadQuranPage extends State<ReadQuranPage> {
       _bookmarkSurah=preferences?.getInt("_bookmarkSurah");
     });
     this.widget.callback();
-    print("success bookmark");
+   
 
     return true;
   }
@@ -65,23 +71,18 @@ class _ReadQuranPage extends State<ReadQuranPage> {
       _bookmarkAyat=preferences?.getInt("_bookmarkAyat");
       _bookmarkSurah=preferences?.getInt("_bookmarkSurah");
     });
-    print("successremove bookmark");
+
     this.widget.callback();
     return true;
   }
 
-  void allSurahToList() async{
+  Future<List<DetailAyat>> allSurahToList() async{
 
     _isLoading=true;
     var surahID=this.widget.surah.id.toString();
     var temp=await readJsonSurah(surahID);
-    // await Future.delayed(const Duration(seconds: 3), (){});
-    setState(() {
-      _isLoading=false;
-      items=temp;
-    });
-    print(items[6].arabic);
-    items2=temp;
+
+    return temp;
   }
   void _loadBannerAd() {
     _bannerAd = BannerAd(
@@ -110,22 +111,36 @@ class _ReadQuranPage extends State<ReadQuranPage> {
 
   @override
   void initState() {
-    // dailyPrayer=fetchPrayerDailyAll();
-    // items = dailyPrayer;
-    // _controller.jumpTo(100.0);
+
     super.initState();
-    // _loadBannerAd();
-    allSurahToList();
     AnalyticsService.observer.analytics.setCurrentScreen(screenName: "read_quran");
-    // itemScrollController.jumpTo(index: 10);
     initializePreference().whenComplete((){
       setState(() {
         _bookmarkAyat=preferences?.getInt("_bookmarkAyat");
         _bookmarkSurah=preferences?.getInt("_bookmarkSurah");
-        print("bookmark save");
-        print(_bookmarkAyat);
+
       });
     });
+    allSurahToList().then((value){
+      setState(() {
+        _isLoading=false;
+        items=value;
+      });
+      if (this.widget?.bookmarkPosition != null){
+        Future.delayed(Duration(seconds: 1), () {
+          // Do something
+          if(itemScrollController.isAttached){
+            itemScrollController.scrollTo(
+                index: this.widget.bookmarkPosition!,
+                duration: Duration(seconds: 2),
+                curve: Curves.easeInOutCubic);
+          }
+        });
+      }
+
+    });
+
+
 
 
 
@@ -182,7 +197,6 @@ class _ReadQuranPage extends State<ReadQuranPage> {
                 ),
               ),
               onTap: (){
-                print("ontap");
                 var result =removebookmarkSurah(index);
                 if (result){
                   AlertDialog alert = AlertDialog(
@@ -322,40 +336,43 @@ class _ReadQuranPage extends State<ReadQuranPage> {
               _isLoading?  Container(child:
               Center(
                 heightFactor: 5,
-                child: CircularProgressIndicator(),
+                child:
+                CircularProgressIndicator(),
               )): Container(),
-              Expanded(
-                child: ScrollablePositionedList.builder(
-                  // reverse: true,
-                  // controller: _controller,
-                  itemScrollController: itemScrollController,
-                  itemCount: items.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (context,index) {
-                    return makeCard(items[index],index);
-                    // return Text(items[index].latin);
 
-                  },
-                  // separatorBuilder: (context,index){
-                  //   if (index== 4 && _isBannerAdReady) {
-                  //     return Align(
-                  //       alignment: Alignment.bottomCenter,
-                  //       child: Container(
-                  //         width: _bannerAd.size.width.toDouble(),
-                  //         height: _bannerAd.size.height.toDouble(),
-                  //         // child: AdWidget(ad: _bannerAd),
-                  //         child: AdWidget(ad: _bannerAd),
-                  //       ),
-                  //     );
-                  //   }else{
-                  //     return Container();
-                  //   }
-                  // },
+                Expanded(
+                    child:
+                    ScrollablePositionedList.builder(
+                      itemCount:items.length,
+                      itemBuilder: (context, index) =>   makeCard(items[index],index),
+                      itemScrollController: itemScrollController,
+                      itemPositionsListener: itemPositionsListener,
+                    )
+                  // ScrollablePositionedList.builder(
+                  //   // reverse: true,
+                  //   itemScrollController: itemScrollController,
+                  //   scrollOffsetController: scrollOffsetController,
+                  //   itemPositionsListener: itemPositionsListener,
+                  //   scrollOffsetListener: scrollOffsetListener,
+                  //   itemCount: items.length,
+                  //   shrinkWrap: true,
+                  //   physics: ClampingScrollPhysics(),
+                  //   initialScrollIndex: 0,
+                  //   initialAlignment: 0,
+                  //
+                  //   itemBuilder: (context,index) {
+                  //     print('index :${index}');
+                  //     // print('index :${items.length}');
+                  //
+                  //       return Text(index.toString(),
+                  //         style: TextStyle(color: Colors.black),);
+                  //
+                  //
+                  //     // return makeCard(items[index],index);
+                  //     // return Text(items[index].latin);
+                  //   },
+                  // ),
                 ),
-              ),
-
-
             ],
           ),
         )
