@@ -1,4 +1,4 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 import 'dart:core';
@@ -27,20 +27,22 @@ import 'package:islamqu/helper/analytics.dart';
 // import 'package:number_to_word_arabic/number_to_word_arabic.dart';
 import 'package:islamqu/helper/utils.dart';
 import 'package:arabic_numbers/arabic_numbers.dart';
+import 'package:islamqu/page/prayerTime.dart';
+import 'package:islamqu/helper/constant.dart';
 
 
 class HomePage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _homePage();
+  State<HomePage> createState() => homePage();
 
 }
 
-class _homePage extends State<HomePage> {
+class homePage extends State<HomePage> {
   NotificationService _notificationService = NotificationService();
   late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
   SharedPreferences? preferences;
-  String? _currentAddress ="";
+  String? _currentAddress;
   Position? _currentPosition;
   String? _nextPrayer;
   String? _nextPrayerName;
@@ -48,6 +50,7 @@ class _homePage extends State<HomePage> {
   String? _name;
   Future<List<DailyPrayer>>? dailyPrayer;
   final arabicNumber = ArabicNumbers();
+  String? jadwal;
 
   Future<void>initializePreference() async {
     this.preferences = await SharedPreferences.getInstance();
@@ -74,162 +77,218 @@ class _homePage extends State<HomePage> {
 
     _bannerAd.load();
   }
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
-    }
+  // Future<bool> _handleLocationPermission() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //         content: Text(
+  //             'Location services are disabled. Please enable the services')));
+  //     return false;
+  //   }
+  //
+  //   return true;
+  // }
 
-    return true;
+  // Future<void> _getCurrentPosition() async {
+  //   final hasPermission = await _handleLocationPermission();
+  //
+  //   if (!hasPermission) return;
+  //   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+  //       .then((Position position) {
+  //     setState(() => _currentPosition = position);
+  //     print(position);
+  //     _getAddressFromLatLng(_currentPosition!);
+  //   }).catchError((e) {
+  //     debugPrint(e);
+  //   });
+  // }
+
+
+  // Future<void> _getAddressFromLatLng(Position position) async {
+  //   // print(position);
+  //   await placemarkFromCoordinates(
+  //       _currentPosition!.latitude, _currentPosition!.longitude)
+  //       .then((List<Placemark> placemarks) {
+  //     Placemark place = placemarks[0];
+  //
+  //     final myCoordinates =
+  //     Coordinates(_currentPosition!.latitude,_currentPosition!.longitude); // Replace with your own location lat, lng.
+  //     final params = CalculationMethod.muslim_world_league.getParameters();
+  //     params.madhab = Madhab.shafi;
+  //     final prayerTimes = PrayerTimes.today(myCoordinates, params);
+  //
+  //     setState(() {
+        // _currentAddress =
+        // '${place.subLocality}, ${place.subAdministrativeArea}';
+        // _city = '${place.subLocality}';
+        //
+        //
+        //  // _prefs.setString('_prefCurrentAddress', _currentAddress);
+        // this.preferences?.setString('_prefCurrentAddress',_currentAddress?? "-");
+        // this.preferences?.setString('_city', _city ?? "ok");
+        // this.preferences?.setDouble('_preflatitude', _currentPosition!.latitude);
+        // this.preferences?.setDouble('_preflongitude', _currentPosition!.longitude);
+        // _nextPrayerName=prayerTimes.nextPrayer().name;
+        // DateTime? now = DateTime.now();
+
+        // var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
+        // _notificationService.scheduleNotification(
+        //     id: 2,
+        //     title: "dhuhr",
+        //     body: "dhuhr",
+        //     scheduledNotificationDateTime:dhuhr
+        // );
+        // var fajr = DateTime(now.year, now.month,  now.day ,prayerTimes.fajr.hour,prayerTimes.fajr.minute );
+        // _notificationService.scheduleNotification(
+        //     id: 1,
+        //     title: "shubuh",
+        //     body: "shubuh",
+        //     scheduledNotificationDateTime:fajr
+        // );
+        // var asr = DateTime(now.year, now.month,  now.day ,prayerTimes.asr.hour,prayerTimes.asr.minute );
+        // _notificationService.scheduleNotification(
+        //     id: 3,
+        //     title: "ashar",
+        //     body: "ashar",
+        //     scheduledNotificationDateTime:asr
+        // );
+        //
+        // var maghrib = DateTime(now.year, now.month,  now.day ,prayerTimes.maghrib.hour,prayerTimes.maghrib.minute );
+        // _notificationService.scheduleNotification(
+        //     id: 4,
+        //     title: "maghrib",
+        //     body: "maghrib",
+        //     scheduledNotificationDateTime:maghrib
+        // );
+        //
+        // var isha = DateTime(now.year, now.month,  now.day ,prayerTimes.isha.hour,prayerTimes.isha.minute );
+        // _notificationService.scheduleNotification(
+        //     id: 5,
+        //     title: "isha",
+        //     body: "isha",
+        //     scheduledNotificationDateTime:isha
+        // );
+
+  //       switch(_nextPrayerName) {
+  //         case "dhuhr":
+  //           _nextPrayer = DateFormat('HH:mm').format(prayerTimes.dhuhr);
+  //
+  //           break;
+  //         case "fajr":
+  //           _nextPrayer = DateFormat('HH:mm').format(prayerTimes.fajr);
+  //
+  //
+  //           break;
+  //         case "asr":
+  //           _nextPrayer = DateFormat('HH:mm').format(prayerTimes.asr);
+  //           break;
+  //         case "maghrib":
+  //           _nextPrayer = DateFormat('HH:mm').format(prayerTimes.maghrib);
+  //           break;
+  //         case "isha":
+  //           _nextPrayer = DateFormat('HH:mm').format(prayerTimes.isha);
+  //           break;
+  //         case "sunrise":
+  //           _nextPrayerName="";
+  //           break;
+  //         case "none":
+  //           _nextPrayerName="";
+  //           // _nextPrayer = DateFormat('HH:mm').format(prayerTimes.sunrise);
+  //           break;
+  //         default:
+  //       }
+  //     });
+  //   }).catchError((e) {
+  //     debugPrint(e);
+  //   });
+  // }
+  void prayertime(){
+
+    final myCoordinates =
+    Coordinates( this.preferences!.getDouble('_preflatitude')!,this.preferences!.getDouble('_preflongitude')!);
+    final params = CalculationMethod.muslim_world_league.getParameters();
+    params.madhab = Madhab.shafi;
+    final prayerTimes = PrayerTimes.today(myCoordinates, params);
+
+    _nextPrayerName=prayerTimes.nextPrayer().name;
+    // setState(() {
+      switch(_nextPrayerName) {
+        case "dhuhr":
+          _nextPrayer = DateFormat('HH:mm').format(prayerTimes.dhuhr);
+
+          break;
+        case "fajr":
+          _nextPrayer = DateFormat('HH:mm').format(prayerTimes.fajr);
+          break;
+        case "asr":
+          _nextPrayer = DateFormat('HH:mm').format(prayerTimes.asr);
+          break;
+        case "maghrib":
+          _nextPrayer = DateFormat('HH:mm').format(prayerTimes.maghrib);
+          break;
+        case "isha":
+          _nextPrayer = DateFormat('HH:mm').format(prayerTimes.isha);
+          break;
+        case "sunrise":
+          _nextPrayerName="";
+          break;
+        case "none":
+          _nextPrayerName="";
+          // _nextPrayer = DateFormat('HH:mm').format(prayerTimes.sunrise);
+          break;
+        default:
+      }
+    // });
+
+
   }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-
-    if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() => _currentPosition = position);
-      print(position);
-      _getAddressFromLatLng(_currentPosition!);
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
-
-  Future<void> _getAddressFromLatLng(Position position) async {
-    // print(position);
-    await placemarkFromCoordinates(
-        _currentPosition!.latitude, _currentPosition!.longitude)
-        .then((List<Placemark> placemarks) {
-      Placemark place = placemarks[0];
-
-      final myCoordinates =
-      Coordinates(_currentPosition!.latitude,_currentPosition!.longitude); // Replace with your own location lat, lng.
-      final params = CalculationMethod.muslim_world_league.getParameters();
-      params.madhab = Madhab.shafi;
-      final prayerTimes = PrayerTimes.today(myCoordinates, params);
-      
-      setState(() {
-        _currentAddress =
-        '${place.subLocality}, ${place.subAdministrativeArea}';
-        _city = '${place.subLocality}';
 
 
-         // _prefs.setString('_prefCurrentAddress', _currentAddress);
-        this.preferences?.setString('_prefCurrentAddress',_currentAddress?? "-");
-        this.preferences?.setString('_city', _city ?? "ok");
-        this.preferences?.setDouble('_preflatitude', _currentPosition!.latitude);
-        this.preferences?.setDouble('_preflongitude', _currentPosition!.longitude);
-        _nextPrayerName=prayerTimes.nextPrayer().name;
-        DateTime? now = DateTime.now();
+  // void _permission() async {
+  //   if (await Permission.notification.isDenied) {
+  //     await Permission.notification.request();
+  //   }
+  //   if (await Permission.location.isDenied){
+  //     await Permission.location.request();
+  //   }
+  //   if(await Permission.location.isGranted){
+  //     await _getCurrentPosition();
+  //   }
+  // }
 
-        var dhuhr = DateTime(now.year, now.month,  now.day ,prayerTimes.dhuhr.hour,prayerTimes.dhuhr.minute );
-        _notificationService.scheduleNotification(
-            id: 2,
-            title: "dhuhr",
-            body: "dhuhr",
-            scheduledNotificationDateTime:dhuhr
-        );
-        var fajr = DateTime(now.year, now.month,  now.day ,prayerTimes.fajr.hour,prayerTimes.fajr.minute );
-        _notificationService.scheduleNotification(
-            id: 1,
-            title: "shubuh",
-            body: "shubuh",
-            scheduledNotificationDateTime:fajr
-        );
-        var asr = DateTime(now.year, now.month,  now.day ,prayerTimes.asr.hour,prayerTimes.asr.minute );
-        _notificationService.scheduleNotification(
-            id: 3,
-            title: "ashar",
-            body: "ashar",
-            scheduledNotificationDateTime:asr
-        );
-
-        var maghrib = DateTime(now.year, now.month,  now.day ,prayerTimes.maghrib.hour,prayerTimes.maghrib.minute );
-        _notificationService.scheduleNotification(
-            id: 4,
-            title: "maghrib",
-            body: "maghrib",
-            scheduledNotificationDateTime:maghrib
-        );
-
-        var isha = DateTime(now.year, now.month,  now.day ,prayerTimes.isha.hour,prayerTimes.isha.minute );
-        _notificationService.scheduleNotification(
-            id: 5,
-            title: "isha",
-            body: "isha",
-            scheduledNotificationDateTime:isha
-        );
-
-        switch(_nextPrayerName) {
-          case "dhuhr":
-            _nextPrayer = DateFormat('HH:mm').format(prayerTimes.dhuhr);
-
-            break;
-          case "fajr":
-            _nextPrayer = DateFormat('HH:mm').format(prayerTimes.fajr);
-
-
-            break;
-          case "asr":
-            _nextPrayer = DateFormat('HH:mm').format(prayerTimes.asr);
-            break;
-          case "maghrib":
-            _nextPrayer = DateFormat('HH:mm').format(prayerTimes.maghrib);
-            break;
-          case "isha":
-            _nextPrayer = DateFormat('HH:mm').format(prayerTimes.isha);
-            break;
-          case "sunrise":
-            _nextPrayerName="";
-            break;
-          case "none":
-            _nextPrayerName="";
-            // _nextPrayer = DateFormat('HH:mm').format(prayerTimes.sunrise);
-            break;
-          default:
-        }
-      });
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
-
-  void _permission() async {
-    if (await Permission.notification.isDenied) {
-      await Permission.notification.request();
-    }
-    if (await Permission.location.isDenied){
-      await Permission.location.request();
-    }
-    if(await Permission.location.isGranted){
-      print("sinisss");
-      await _getCurrentPosition();
-
-    }
-  }
   @override
   void initState() {
     super.initState();
     AnalyticsService.observer.analytics.setCurrentScreen(screenName: "main2");
     // _loadBannerAd();
     print("masukkk page home");
-    _permission();
+    // _permission();
     readJsonAllSurah();
+
     dailyPrayer=fetchPrayerDaily();
     initializePreference().whenComplete((){
       setState(() {
+        _currentAddress=this.preferences?.getString("_prefCurrentAddress");
         print(preferences?.getString("name"));
         print(preferences?.getDouble("_preflatitude"));
+        prayertime();
+        var t=_nextPrayerName ?? "";
+        var s=_nextPrayer ?? "";
+        jadwal=t+" "+s;
       });
     });
+
+
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -255,10 +314,11 @@ class _homePage extends State<HomePage> {
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
                   child:  Text(
-                    '${this.preferences?.getString("_city")}',
+                    _currentAddress ?? "Lokasi belum di atur",
                     // '${_currentAddress ?? ""}',
                     // 'test',
                     style: TextStyle(
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -313,7 +373,7 @@ class _homePage extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 20.0,right: 20.0), //some spacing to the child from bottom
                   child:
-                  Text('${_nextPrayerName ?? ""} :  ${_nextPrayer ?? ""}', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
+                  Text(jadwal ?? "" , style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
                   ,)
             ),
 
@@ -371,10 +431,10 @@ class _homePage extends State<HomePage> {
             },
           ),
           SquareButton(
-            icon: Icon(FlutterIslamicIcons.tasbihHand),
-            label: 'Tashbih',
+            icon: Icon(FlutterIslamicIcons.kowtow),
+            label: 'Sholat',
             onPressed: (){
-              Navigator.of(context).push(_createRoute(DailyPrayerPage()));
+              Navigator.of(context).push(_createRoute(PrayerTime()));
             },
           ),
         ],
@@ -392,7 +452,9 @@ class _homePage extends State<HomePage> {
     Widget timelineTest=FutureBuilder(
         future: dailyPrayer,
         builder: (context, snapshot) {
+
          if (snapshot.hasError) print(snapshot.error);
+
           return snapshot.hasData
             ?
           ListView.separated(
@@ -405,7 +467,6 @@ class _homePage extends State<HomePage> {
               separatorBuilder: (context,index){
                if ((index + 1) % 4 == 0 && _isBannerAdReady) {
                   return Align(
-
                      alignment: Alignment.bottomCenter,
                      child: Container(
                        width: _bannerAd.size.width.toDouble(),
@@ -419,11 +480,13 @@ class _homePage extends State<HomePage> {
                }
               },
               itemBuilder: (context,index){
+
                return
                     GestureDetector(
                       child:   Container(
                         // height: 100,
                         child: Card(
+                          color: Colors.white,
                         clipBehavior: Clip.antiAlias,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -445,7 +508,7 @@ class _homePage extends State<HomePage> {
                               Text(
                                 snapshot.requireData[index].latin.length > 50 ? snapshot.requireData[index].latin.substring(0, 50)+'  ....' : snapshot.requireData[index].latin,
                                 textAlign: TextAlign.left,
-                                style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                                style: TextStyle(color: Colors.black.withOpacity(0.6),fontStyle: FontStyle.italic),
                               ),
                             ),
                             if(snapshot.requireData[index].latin.length < 50)...[
@@ -455,7 +518,7 @@ class _homePage extends State<HomePage> {
                                   "artinya",
                                   textAlign: TextAlign.left,
 
-                                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                                  style: TextStyle(color: Colors.black.withOpacity(0.6),fontStyle: FontStyle.italic),
                                 ),
                               ),
                               Padding(
@@ -463,7 +526,7 @@ class _homePage extends State<HomePage> {
                                 child: Text(
                                   snapshot.requireData[index].arti,
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                                  style: TextStyle(color: Colors.black.withOpacity(0.6),fontStyle: FontStyle.italic),
                                 ),
                               ),
                             ]else...[
@@ -498,7 +561,7 @@ class _homePage extends State<HomePage> {
           alignment: Alignment.centerLeft,
           child: Text(
             "Islam Qu",
-            style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
+            style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),
           ),
         ),
 

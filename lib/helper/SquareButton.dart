@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:islamqu/page/qiblah.dart';
+import 'package:islamqu/helper/constant.dart';
 class SquareButton extends StatelessWidget {
   final String label;
   final Icon icon;
@@ -21,8 +22,8 @@ class SquareButton extends StatelessWidget {
             onPressed: () {
               onPressed();
             },
-            color: Colors.green[500],
-            child: Icon(icon.icon, size: 26.0,),
+            color: buttonCollors,
+            child: Icon(icon.icon, size: 26.0,color: mainColor,),
           ),
 
         ),

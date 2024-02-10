@@ -9,6 +9,7 @@ import 'package:islamqu/model/surah.dart';
 import 'package:islamqu/page/read_alquran.dart';
 import 'package:islamqu/helper/analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:islamqu/helper/constant.dart';
 
 
 class ListSurahPage extends StatefulWidget {
@@ -28,7 +29,7 @@ class _ListSurahPage extends State<ListSurahPage> {
   late String? _bookmarkSurahName;
   late String? _bookmarkSuraharab;
   late int? num=0;
-
+  AllSurah? bookmark;
   var items = <AllSurah>[];
   var items2 = <AllSurah>[];
   void allSurahToList() async{
@@ -71,11 +72,12 @@ class _ListSurahPage extends State<ListSurahPage> {
       _bookmarkSurah=preferences?.getInt("_bookmarkSurah");
       _bookmarkSurahName=preferences?.getString('_bookmarkSurahName');
       _bookmarkSuraharab=preferences?.getString('_bookmarkSuraArab');
-
-      // print(object)
-      // _bookmarkAyat.
-      print("bookmark save");
-      print(_bookmarkAyat);
+      // bookmark.id=_bookmarkSurah!;
+      // bookmark.name=_bookmarkSurahName!;
+      // bookmark.textArab=_bookmarkSuraharab!;
+      if(_bookmarkSurah!=null){
+        bookmark=new AllSurah(id: _bookmarkSurah!, name: _bookmarkSurahName!, textArab: _bookmarkSuraharab!, terjemahan: "", countAyat: 0);
+      }
 
     });
    print("jerii");
@@ -86,6 +88,7 @@ class _ListSurahPage extends State<ListSurahPage> {
     // dailyPrayer=fetchPrayerDailyAll();
     // items = dailyPrayer;
     super.initState();
+    // bookmark=new AllSurah()
     // _loadBannerAd();
     print("call iniit state");
     allSurahToList();
@@ -138,7 +141,7 @@ class _ListSurahPage extends State<ListSurahPage> {
                   alignment: Alignment.center,
                   child: Text(
                     '${model.id}'' ',
-                    style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold,fontSize: 20),),
+                    style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold,fontSize: 20),),
                 ),
 
               ) // other widgets inside border
@@ -150,7 +153,7 @@ class _ListSurahPage extends State<ListSurahPage> {
       ),
       title: Text(
         model.name,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
       ),
       // subtitle: Text("Intermediate", style: TextStyle(color: Colors.white)),
 
@@ -161,7 +164,7 @@ class _ListSurahPage extends State<ListSurahPage> {
               child: Container(
                 // tag: 'hero',
                 child: Text(model.textArab,
-                    style: TextStyle(color: Colors.white,fontSize: 20)),
+                    style: TextStyle(color: Colors.black87,fontSize: 20)),
               )),
         ],
       ),
@@ -179,7 +182,7 @@ class _ListSurahPage extends State<ListSurahPage> {
       elevation: 8.0,
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
-        decoration: BoxDecoration(color: Colors.green[500],
+        decoration: BoxDecoration(color: Colors.white70,
         borderRadius: BorderRadius.circular(5)),
         child: makeListTile(allSurah),
       ),
@@ -189,7 +192,7 @@ class _ListSurahPage extends State<ListSurahPage> {
           centerTitle: true,
           title: Column(children: [
             Text(
-              "Al Quran",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
+              "Al Quran",style: TextStyle(color:mainColor,fontWeight: FontWeight.bold),
             ),
           ]),
         ),
@@ -250,10 +253,10 @@ class _ListSurahPage extends State<ListSurahPage> {
                     ),
                   ),
                   onTap: (){
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => ReadQuranPage(surah:model,callback: refreshbookmark)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ReadQuranPage(surah:this.bookmark!,callback: refreshbookmark,bookmarkPosition: _bookmarkAyat!,)));
                   },
                 )
 
