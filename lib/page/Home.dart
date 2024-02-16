@@ -55,6 +55,7 @@ class homePage extends State<HomePage> {
   Future<void>initializePreference() async {
     this.preferences = await SharedPreferences.getInstance();
     this.preferences?.setString("name", "Peter");
+
   }
   void _loadBannerAd() {
     _bannerAd = BannerAd(
@@ -268,7 +269,11 @@ class homePage extends State<HomePage> {
     print("masukkk page home");
     // _permission();
     readJsonAllSurah();
-
+    // print(_notificationService.getActiveNotifications());
+    _notificationService.getActiveNotifications().then((value) {
+      print("notif");
+      for ( var i in value ) print(i.title);
+    });
     dailyPrayer=fetchPrayerDaily();
     initializePreference().whenComplete((){
       setState(() {

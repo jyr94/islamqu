@@ -190,6 +190,16 @@ class _SettingPage extends State<SettingPage> {
   // Tuple2<bool, String> resultAdzan(bool status,String message) {
   //   return new Tuple2(status, message);
   // }
+  Future<void> NotifTest() async {
+    // var result = DateTime.now().add(Duration(minutes: 2));
+    // _notificationService.scheduleNotification(
+    //     id: 9,
+    //     title: "shubuh",
+    //     body: "shubuh",
+    //     scheduledNotificationDateTime: result);
+    // print(result);
+    _notificationService.cancelNotifications(9);
+  }
 
   Future<Tuple2<bool, String>> setAdzanShubuh(bool value) async {
 
@@ -205,7 +215,7 @@ class _SettingPage extends State<SettingPage> {
         prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
-            print(ps.fajr);
+
             var fajr = DateTime(
                 now.year, now.month, now.day, ps.fajr.hour, ps.fajr.minute);
             _notificationService.scheduleNotification(
@@ -214,6 +224,7 @@ class _SettingPage extends State<SettingPage> {
                 body: "shubuh",
                 scheduledNotificationDateTime: fajr);
             print("done set notifi");
+            print(fajr);
             // return resp.;
             // return resp(true,"");
             return Tuple2(false, "");
@@ -398,6 +409,7 @@ class _SettingPage extends State<SettingPage> {
         isSwitchedmakrib =
             this.preferences?.getBool('_isSwitchedmakrib') ?? false;
         isSwitchedisya = this.preferences?.getBool('_isSwitchedisya') ?? false;
+
         _currentAddress = this.preferences?.getString("_prefCurrentAddress");
       });
     });
@@ -413,6 +425,7 @@ class _SettingPage extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+
           centerTitle: true,
           title: Column(children: [
             Text(
@@ -469,7 +482,7 @@ class _SettingPage extends State<SettingPage> {
                           color: Colors.black,
                           fontSize: 15,
                           fontStyle: FontStyle.italic)),
-                  subtitle: Text("Tidak ada Pemberitahuan yang aktif"),
+                  // subtitle: Text("Tidak ada Pemberitahuan yang aktif"),
                   // trailing: Icon(Icons.arrow_forward),
                 ),
               ),
@@ -484,6 +497,7 @@ class _SettingPage extends State<SettingPage> {
                           if (rr.item1) {
                             setState(() {
                             print('valueee $value');
+                            NotifTest();
                             isSwitchedShubuh = value;
                             this.preferences?.setBool(
                                 '_isSwitchedShubuh', isSwitchedShubuh);
@@ -507,8 +521,6 @@ class _SettingPage extends State<SettingPage> {
                   trailing: Switch(
                     value: isSwitchedzuhur,
                     onChanged: (value) {
-
-
                         setAdzanZuhur(value).then((Tuple2 rr) {
                         if (rr.item1) {
                           setState(() {
@@ -537,15 +549,14 @@ class _SettingPage extends State<SettingPage> {
                   trailing: Switch(
                     value: isSwitchedashar,
                     onChanged: (value) {
-
-
                         setAdzanAshar(value).then((Tuple2 rr) {
                           if (rr.item1){
                             setState(() {
+                              isSwitchedashar = value;
                             this
                                 .preferences
                                 ?.setBool('_isSwitchedashar', isSwitchedashar);
-                            isSwitchedashar = value;
+
                             print("done on off Ashar");
                             });
                           }else{
@@ -571,10 +582,11 @@ class _SettingPage extends State<SettingPage> {
                         setAdzanMakrib(value).then((Tuple2 rr) {
                           if(rr.item1){
                             setState(() {
+                              isSwitchedmakrib = value;
                             this
                                 .preferences
                                 ?.setBool('_isSwitchedmakrib', isSwitchedmakrib);
-                            isSwitchedmakrib = value;
+
                             print("done on off Magrib");
                             });
                           }else{
@@ -600,10 +612,11 @@ class _SettingPage extends State<SettingPage> {
                         setAdzanIsya(value).then((Tuple2 rr) {
                           if(rr.item1){
                             setState(() {
+                              isSwitchedisya = value;
                             this
                                 .preferences
                                 ?.setBool('_isSwitchedisya', isSwitchedisya);
-                            isSwitchedisya = value;
+
                             print("done on off Isya");
                             });
                           }else{

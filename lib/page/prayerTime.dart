@@ -97,7 +97,7 @@ class _PrayerTimeState extends State<PrayerTime> {
             "Jadwal Sholat",style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),
           ),
         Text(
-          preferences?.getString("_city") ?? "",style: TextStyle(color: mainColor,fontSize: 12),
+          preferences?.getString("_prefCurrentAddress") ?? "",style: TextStyle(color: mainColor,fontSize: 12),
         ),
         ]),
       ),
