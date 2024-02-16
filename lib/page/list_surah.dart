@@ -80,7 +80,6 @@ class _ListSurahPage extends State<ListSurahPage> {
       }
 
     });
-   print("jerii");
   }
 
   @override

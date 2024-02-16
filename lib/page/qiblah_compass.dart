@@ -8,6 +8,7 @@ import 'package:islamqu/page/location_error_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:islamqu/helper/analytics.dart';
+import 'package:islamqu/page/setting.dart';
 
 class QiblahCompass extends StatefulWidget {
   @override
@@ -83,9 +84,12 @@ class _QiblahCompassState extends State<QiblahCompass> {
     final locationStatus = await FlutterQiblah.checkLocationStatus();
     if (locationStatus.enabled &&
         locationStatus.status == LocationPermission.denied) {
-      await FlutterQiblah.requestPermissions();
-      final s = await FlutterQiblah.checkLocationStatus();
-      _locationStreamController.sink.add(s);
+      // await FlutterQiblah.requestPermissions();
+      // final s = await FlutterQiblah.checkLocationStatus();
+      // _locationStreamController.sink.add(s);
+      print('page qiblat ${locationStatus.status}');
+      showAlert(context,_checkLocationStatus);
+
     } else
       _locationStreamController.sink.add(locationStatus);
   }
@@ -132,3 +136,26 @@ class QiblahCompassWidget extends StatelessWidget {
     );
   }
 }
+
+showAlert(BuildContext context,Function function) {
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        content: Text("Atur Lokasi Dahulu"),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Ok'),
+            onPressed: () {
+              Navigator.pop(context,true);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SettingPage())).then((value) {
+                function();
+              });
+            },
+          ),
+        ],
+      ));
+}
+

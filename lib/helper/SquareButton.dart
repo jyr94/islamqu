@@ -23,7 +23,7 @@ class SquareButton extends StatelessWidget {
               onPressed();
             },
             color: buttonCollors,
-            child: Icon(icon.icon, size: 26.0,color: mainColor,),
+            child: Icon(icon.icon, size: 26.0,color: Colors.green,weight: 1000,),
           ),
 
         ),

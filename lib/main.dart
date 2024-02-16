@@ -25,6 +25,8 @@ import 'package:islamqu/page/list_surah.dart';
 import 'package:islamqu/page/prayerTime.dart';
 import 'package:islamqu/page/setting.dart';
 import 'package:islamqu/helper/constant.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 
 
 
@@ -40,6 +42,8 @@ void main() async{
     FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
     FlutterError.onError =
         FirebaseCrashlytics.instance.recordFlutterFatalError;
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     // adsHelper.init();
   }catch(e) {
@@ -71,7 +75,7 @@ class _MyAppState extends State<MyApp> {
     //
     // FirebaseAnalytics.instance.logAppOpen();
     AnalyticsService.observer.analytics.setCurrentScreen(screenName: "main");
-
+    FlutterNativeSplash.remove();
   }
 
   @override
