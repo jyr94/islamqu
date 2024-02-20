@@ -31,6 +31,6 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-          FLUTTER_MINSDKVERSION: ${{ vars.FLUTTER_MINSDKVERSION }}
-          FLUTTER_VERSIONCODE: ${{ vars.FLUTTER_VERSIONCODE }}
-          FLUTTER_VERSIONNAME: ${ vars.FLUTTER_VERSIONNAME }}
+          flutter_minSdkVersion: ${{ vars.FLUTTER_MINSDKVERSION }}
+          flutter_versionCode: ${{ vars.FLUTTER_VERSIONCODE }}
+          flutter_versionName: ${ vars.FLUTTER_VERSIONNAME }}
