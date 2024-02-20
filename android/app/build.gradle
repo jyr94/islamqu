@@ -16,12 +16,12 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter_versionCode')
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
 }
 
-def flutterVersionName = localProperties.getProperty('flutter_versionName')
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
@@ -54,7 +54,7 @@ android {
         applicationId "islam.qu.islamqu"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion localProperties.getProperty('FLUTTER_MINSDKVERSION').toInteger()
+        minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
