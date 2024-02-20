@@ -55,6 +55,7 @@ void main() async{
 }
 
 
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
@@ -135,23 +136,24 @@ class _BottomNavigationBarExampleState
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.lantern),
+            icon: Icon(FlutterIslamicIcons.solidLantern),
             label: 'test',
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.kowtow),
+            icon: Icon(FlutterIslamicIcons.solidKowtow),
             label: 'Search',
             backgroundColor: Colors.white,
+
           ),
 
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.qibla),
+            icon: Icon(FlutterIslamicIcons.solidQibla),
             label: 'Favorite',
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(FlutterIslamicIcons.muslim2),
+            icon: Icon(FlutterIslamicIcons.solidMuslim),
             label: 'Pengaturan',
             backgroundColor: Colors.white,
           ),

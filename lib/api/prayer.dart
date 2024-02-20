@@ -19,13 +19,9 @@ Future<List<DailyPrayer>> fetchPrayerDaily() async {
     // print(decodeDailyPrayer(response.body));
     List<DailyPrayer> datas=[];
     List<DailyPrayer> limit=decodeDailyPrayer(response.body);
-    print("-----");
     for (var i = 0; i < 5; i++) {
       datas.add(limit[random.nextInt(16)]);
     }
-    print("weww");
-    print(datas.length);
-    print("errrrrr");
     return datas;
   } else {
     throw Exception('Unable to fetch data from the REST API');

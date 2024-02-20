@@ -58,6 +58,7 @@ class _SettingPage extends State<SettingPage> {
   bool isSwitchedashar = false;
   bool isSwitchedmakrib = false;
   bool isSwitchedisya = false;
+  bool isNotifPermision=false;
 
   void _loadBannerAd() {
     _bannerAd = BannerAd(
@@ -156,27 +157,37 @@ class _SettingPage extends State<SettingPage> {
     }
     if (await Permission.location.isGranted) {
       await _getCurrentPosition().whenComplete(() {
+
         return true;
       });
     }
     return false;
   }
-  Future<bool> _permission() async {
+
+  Future<Tuple2<bool, String>> _permissionNotif(bool value) async {
+    if (this.preferences?.getDouble('_preflatitude') == null) {
+      return  Tuple2(false, "Aktifkan Lokasi Dahulu");
+    }
+
     if (await Permission.notification.isDenied || await Permission.notification.isPermanentlyDenied) {
-      print("okaaaa");
       await Permission.notification.request();
       // return Future.value(false);
     }else if( await Permission.notification.isGranted){
-      print("isGranted");
-      return Future.value(true);
+      if (value==false){
+        setAdzanShubuh(false);
+        setAdzanZuhur(false);
+        setAdzanAshar(false);
+        setAdzanMakrib(false);
+        setAdzanIsya(false);
+      }
+      return Tuple2(true, "");
     }
 
     if (await Permission.notification.status.isPermanentlyDenied){
-      print("sini oyy");
       AppSettings.openAppSettings(type: AppSettingsType.notification);
     }
-    print(await Permission.notification.status);
-    return Future.value(false);
+
+    return Tuple2(false, "Aktifkan Lokasi Dahulu");;
   }
   Future<PrayerTimes> prayertime() async {
     final myCoordinates = Coordinates(
@@ -194,8 +205,8 @@ class _SettingPage extends State<SettingPage> {
     // var result = DateTime.now().add(Duration(minutes: 2));
     // _notificationService.scheduleNotification(
     //     id: 9,
-    //     title: "shubuh",
-    //     body: "shubuh",
+    //     title: "testing",
+    //     body: "testing",
     //     scheduledNotificationDateTime: result);
     // print(result);
     _notificationService.cancelNotifications(9);
@@ -203,191 +214,122 @@ class _SettingPage extends State<SettingPage> {
 
   Future<Tuple2<bool, String>> setAdzanShubuh(bool value) async {
 
-    if (this.preferences?.getDouble('_preflatitude') == null) {
-      print("errorsss");
-      return  Tuple2(false, "Aktifkan Lokasi Dahulu");
-    }
-
-   var test= await _permission().then((v){
-      print('permision,$v');
-      if (v){
-        print("masuk true");
-        prayertime().then((ps) {
+    var result = await prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
-
             var fajr = DateTime(
-                now.year, now.month, now.day, ps.fajr.hour, ps.fajr.minute);
+                now.year, now.month, now.day, ps.fajr.hour, ps.fajr.minute,ps.fajr.second,ps.fajr.millisecond,ps.fajr.microsecond);
             _notificationService.scheduleNotification(
                 id: 1,
-                title: "shubuh",
-                body: "shubuh",
+                title: "Masuk Waktu Subuh ${ps.fajr.hour} : ${ps.fajr.minute}",
+                body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: fajr);
-            print("done set notifi");
-            print(fajr);
-            // return resp.;
-            // return resp(true,"");
-            return Tuple2(false, "");
+            return Tuple2(true, "");
           } else {
             _notificationService.cancelNotifications(1);
-            print("done remove notifi");
-            // return resp(true,"");
             return Tuple2(true, "");
           }
         });
-      }else{
-        // return resp(false,"Izinkan Pemberitahuan");
-        return Tuple2(false, "Izinkan Pemberitahuan");
-      }
-      // return resp(true,"");
-      return Tuple2(true, "");
-
-    });
-    return Future.value(test);
+    this.preferences?.setBool(
+        '_isSwitchedShubuh', value);
+    return Future.value(result);
 
   }
 
   Future<Tuple2<bool, String>> setAdzanZuhur(bool value) async{
-    if (this.preferences?.getDouble('_preflatitude') == null) {
-      print("errorsss");
-      return Tuple2(false, "Aktifkan Lokasi Dahulu!!");
-    }
-    // var ps=prayertime();
-    var result= await _permission().then((v){
-      if (v){
-        prayertime().then((ps) {
+        var result = await prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
             var dhuhr = DateTime(
-                now.year, now.month, now.day, ps.dhuhr.hour, ps.dhuhr.minute);
+                now.year, now.month, now.day, ps.dhuhr.hour, ps.dhuhr.minute,ps.dhuhr.second,ps.dhuhr.millisecond,ps.dhuhr.microsecond);
             _notificationService.scheduleNotification(
                 id: 2,
-                title: "dhuhr",
-                body: "dhuhr",
+                title: "Masuk Waktu Dzuhur ${ps.dhuhr.hour} : ${ps.dhuhr.minute}",
+                body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: dhuhr);
-            print("done set notifi zuhur");
             return Tuple2(true, "");
           } else {
             _notificationService.cancelNotifications(2);
-            print("done remove notifi zuhur");
             return Tuple2(true, "");
           }
         });
-      }else{
-        return Tuple2(false, "Izinkan Pemberitahuan");
-      }
-      return Tuple2(true, "");
-
-    });
+        this
+            .preferences
+            ?.setBool('_isSwitchedzuhur', value);
     return Future.value(result);
   }
 
   Future<Tuple2<bool, String>> setAdzanAshar(bool value) async {
-    print(this.preferences?.getDouble('_preflatitude'));
-    if (this.preferences?.getDouble('_preflatitude') == null) {
-      print("errorsss");
-      return Tuple2(false, "Aktifkan Lokasi Dahulu");
-    }
-    // var ps=prayertime();
-   var result= await _permission().then((v){
-      if (v){
-        prayertime().then((ps) {
+        var result =await prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
             var asr =
-            DateTime(now.year, now.month, now.day, ps.asr.hour, ps.asr.minute);
+            DateTime(now.year, now.month, now.day, ps.asr.hour, ps.asr.minute,ps.asr.second,ps.asr.millisecond,ps.asr.microsecond);
             _notificationService.scheduleNotification(
                 id: 3,
-                title: "ashar",
-                body: "ashar",
+                title: "Masuk Waktu Ashar ${ps.asr.hour} : ${ps.asr.minute}",
+                body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: asr);
-            print("done set notifi ashar");
             return Tuple2(true, "");
           } else {
             _notificationService.cancelNotifications(3);
-            print("done remove notifi ashar");
             return Tuple2(true, "");
           }
         });
-      }else{
-        return Tuple2(false, "Izinkan Pemberitahuan");
-      }
-      return Tuple2(true, "");
 
-    });
+        this
+            .preferences
+            ?.setBool('_isSwitchedashar', value);
     return Future.value(result);
   }
 
   Future<Tuple2<bool, String>> setAdzanMakrib(bool value) async{
-    if (this.preferences?.getDouble('_preflatitude') == null) {
-      print("errorsss");
-      return Tuple2(false, "Aktifkan Lokasi Dahulu");
-    }
-    // var ps=prayertime();
-    var result= await _permission().then((v){
-      if (v){
-        prayertime().then((ps) {
+
+       var result =await prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
             var maghrib = DateTime(
-                now.year, now.month, now.day, ps.maghrib.hour, ps.maghrib.minute);
+                now.year, now.month, now.day, ps.maghrib.hour, ps.maghrib.minute,ps.maghrib.second,ps.maghrib.millisecond,ps.maghrib.microsecond);
             _notificationService.scheduleNotification(
                 id: 4,
-                title: "maghrib",
-                body: "maghrib",
+                title: "Masuk Waktu Magrib ${ps.maghrib.hour} : ${ps.maghrib.minute}",
+                body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: maghrib);
-
-            print("done set notifi maghrib");
             return Tuple2(true, "");
           } else {
             _notificationService.cancelNotifications(4);
-            print("done remove notifi maghrib");
             return Tuple2(true, "");
           }
         });
-      }else{
-        return Tuple2(false, "Izinkan Pemberitahuan");
-      }
-      return Tuple2(true, "");
-
-    });
+       this
+           .preferences
+           ?.setBool('_isSwitchedmakrib', value);
     return Future.value(result);
   }
 
   Future<Tuple2<bool, String>>  setAdzanIsya(bool value) async{
-    if (this.preferences?.getDouble('_preflatitude') == null) {
-      print("errorsss");
-      return Tuple2(false, "Aktifkan Lokasi Dahulu");
-    }
-    // var ps=prayertime();
-    var result= await _permission().then((v){
-      if (v){
-        prayertime().then((ps) {
+
+       var result= await prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
             var isha = DateTime(
-                now.year, now.month, now.day, ps.isha.hour, ps.isha.minute);
+                now.year, now.month, now.day, ps.isha.hour, ps.isha.minute,ps.isha.second,ps.isha.millisecond,ps.isha.microsecond);
             _notificationService.scheduleNotification(
                 id: 5,
-                title: "isha",
-                body: "isha",
+                title: "Masuk Waktu isya ${ps.isha.hour} : ${ps.isha.minute}",
+                body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: isha);
-
-            print("done set notifi isha");
             return Tuple2(true, "");
           } else {
             _notificationService.cancelNotifications(5);
-            print("done remove notifi isha");
             return Tuple2(true, "");
 
           }
         });
-      }else{
-        return Tuple2(false, "Izinkan Pemberitahuan");
-      }
-      return Tuple2(true, "");
+       this
+           .preferences
+           ?.setBool('_isSwitchedisya', value);
 
-    });
     return Future.value(result);
   }
 
@@ -411,6 +353,8 @@ class _SettingPage extends State<SettingPage> {
         isSwitchedisya = this.preferences?.getBool('_isSwitchedisya') ?? false;
 
         _currentAddress = this.preferences?.getString("_prefCurrentAddress");
+        isNotifPermision= this.preferences?.getBool('isNotifPermision') ?? false;
+        print('isnotifpermision ${isNotifPermision}');
       });
     });
   }
@@ -450,7 +394,7 @@ class _SettingPage extends State<SettingPage> {
                             fontSize: 15,
                             fontStyle: FontStyle.italic)),
                     subtitle: Text(
-                      _currentAddress ?? "Lokasi belum di atur",
+                      _currentAddress ?? "Lokasi belum diatur",
                       style: TextStyle(fontSize: 17),
                     ),
                     trailing: Icon(Icons.refresh),
@@ -473,91 +417,74 @@ class _SettingPage extends State<SettingPage> {
               Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Divider()),
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: ListTile(
-                  leading: Icon(Icons.notifications_active),
-                  title: Text('Pemberitahuan Jadwal Sholat',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontStyle: FontStyle.italic)),
-                  // subtitle: Text("Tidak ada Pemberitahuan yang aktif"),
-                  // trailing: Icon(Icons.arrow_forward),
+
+               Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: ListTile(
+                    leading: Icon(Icons.notifications),
+                    title: Text('Pemberitahuan Jadwal Sholat',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontStyle: FontStyle.italic)),
+                    subtitle: Text(isNotifPermision ? "Pemberitahuan Active" : "Pemberitahuan Tidak Aktif"),
+                    trailing: Switch(
+                      value: isNotifPermision,
+                      onChanged: (value){
+                        _permissionNotif(value).then((tt){
+                          if(tt.item1){
+                            setState(() {
+                              print('ttttt ${tt.item1}');
+                              isNotifPermision=value;
+                              this.preferences?.setBool("isNotifPermision", value);
+                            });
+                          }else{
+                            showAlert(context, tt.item2);
+                          }
+                        });
+                      },
+                        activeTrackColor: Colors.green
+                    ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: ListTile(
-                  title: Text('Subuh'),
-                  trailing: Switch(
-                    value: isSwitchedShubuh,
-                    onChanged: (value) {
+              if(isNotifPermision)...[
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: ListTile(
+                    title: Text('Subuh'),
+                    trailing: Switch(
+                      value: isSwitchedShubuh,
+                      onChanged: (value) {
                         setAdzanShubuh(value).then((Tuple2 rr) {
                           if (rr.item1) {
                             setState(() {
-                            print('valueee $value');
-                            NotifTest();
-                            isSwitchedShubuh = value;
-                            this.preferences?.setBool(
-                                '_isSwitchedShubuh', isSwitchedShubuh);
-                            print("done on off shubuh");
+                              NotifTest();
+                              isSwitchedShubuh = value;
+                              print("done on off shubuh");
                             });
                           } else {
                             showAlert(context, rr.item2);
                           }
                         });
-
-                    },
-                    activeTrackColor: Colors.blue,
-                    // activeColor: Colors.blue,
+                      },
+                      activeTrackColor: Colors.blue,
+                      // activeColor: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: ListTile(
-                  title: Text('Dhuhr'),
-                  trailing: Switch(
-                    value: isSwitchedzuhur,
-                    onChanged: (value) {
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: ListTile(
+                    title: Text('Dhuhr'),
+                    trailing: Switch(
+                      value: isSwitchedzuhur,
+                      onChanged: (value) {
                         setAdzanZuhur(value).then((Tuple2 rr) {
-                        if (rr.item1) {
-                          setState(() {
-                          isSwitchedzuhur = value;
-                          this
-                              .preferences
-                              ?.setBool('_isSwitchedzuhur', isSwitchedzuhur);
-                          print("done on off Dhuhr");
-                          });
-                        }else{
-                          showAlert(context, rr.item2);
-                        }
-
-                        });
-
-                    },
-                    activeTrackColor: Colors.blue,
-                    // activeColor: Colors.blue,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: ListTile(
-                  title: Text('Ashar'),
-                  trailing: Switch(
-                    value: isSwitchedashar,
-                    onChanged: (value) {
-                        setAdzanAshar(value).then((Tuple2 rr) {
-                          if (rr.item1){
+                          if (rr.item1) {
                             setState(() {
-                              isSwitchedashar = value;
-                            this
-                                .preferences
-                                ?.setBool('_isSwitchedashar', isSwitchedashar);
+                              isSwitchedzuhur = value;
 
-                            print("done on off Ashar");
+                              print("done on off Dhuhr");
                             });
                           }else{
                             showAlert(context, rr.item2);
@@ -565,29 +492,54 @@ class _SettingPage extends State<SettingPage> {
 
                         });
 
-                    },
-                    activeTrackColor: Colors.blue,
-                    // activeColor: Colors.blue,
+                      },
+                      activeTrackColor: Colors.blue,
+                      // activeColor: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: ListTile(
-                  title: Text('Magrib'),
-                  trailing: Switch(
-                    value: isSwitchedmakrib,
-                    onChanged: (value) {
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: ListTile(
+                    title: Text('Ashar'),
+                    trailing: Switch(
+                      value: isSwitchedashar,
+                      onChanged: (value) {
+                        setAdzanAshar(value).then((Tuple2 rr) {
+                          if (rr.item1){
+                            setState(() {
+                              isSwitchedashar = value;
+
+
+                              print("done on off Ashar");
+                            });
+                          }else{
+                            showAlert(context, rr.item2);
+                          }
+
+                        });
+
+                      },
+                      activeTrackColor: Colors.blue,
+                      // activeColor: Colors.blue,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: ListTile(
+                    title: Text('Magrib'),
+                    trailing: Switch(
+                      value: isSwitchedmakrib,
+                      onChanged: (value) {
 
                         setAdzanMakrib(value).then((Tuple2 rr) {
                           if(rr.item1){
                             setState(() {
                               isSwitchedmakrib = value;
-                            this
-                                .preferences
-                                ?.setBool('_isSwitchedmakrib', isSwitchedmakrib);
 
-                            print("done on off Magrib");
+
+                              print("done on off Magrib");
                             });
                           }else{
                             showAlert(context, rr.item2);
@@ -596,28 +548,26 @@ class _SettingPage extends State<SettingPage> {
 
                         });
 
-                    },
-                    activeTrackColor: Colors.blue,
-                    // activeColor: Colors.blue,
+                      },
+                      activeTrackColor: Colors.blue,
+                      // activeColor: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: ListTile(
-                  title: Text('Isya'),
-                  trailing: Switch(
-                    value: isSwitchedisya,
-                    onChanged: (value) {
+                Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: ListTile(
+                    title: Text('Isya'),
+                    trailing: Switch(
+                      value: isSwitchedisya,
+                      onChanged: (value) {
                         setAdzanIsya(value).then((Tuple2 rr) {
                           if(rr.item1){
                             setState(() {
                               isSwitchedisya = value;
-                            this
-                                .preferences
-                                ?.setBool('_isSwitchedisya', isSwitchedisya);
 
-                            print("done on off Isya");
+
+                              print("done on off Isya");
                             });
                           }else{
                             showAlert(context, rr.item2);
@@ -625,12 +575,14 @@ class _SettingPage extends State<SettingPage> {
 
                         });
 
-                    },
-                    activeTrackColor: Colors.blue,
-                    // activeColor: Colors.blue,
+                      },
+                      activeTrackColor: Colors.blue,
+                      // activeColor: Colors.blue,
+                    ),
                   ),
                 ),
-              ),
+              ]
+
             ],
           ),
         ));
