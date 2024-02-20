@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Create local.property
+      - name: Create local.properties
         run : |
           echo "FLUTTER_MINSDKVERSION=${{ vars.FLUTTER_MINSDKVERSION }}" >> android/local.properties
       - name: Decode Keystore
