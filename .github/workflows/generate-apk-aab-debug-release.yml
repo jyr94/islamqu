@@ -9,9 +9,9 @@ jobs:
       - name: Get local.properties from secrets
         run: echo "${{secrets.LOCAL_PROPERTIES }}" > $GITHUB_WORKSPACE/local.properties
       - name: Decode android/upload_key.jks
-        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > $RUNNER_TEMP/android/upload-keystore.jks
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > $RUNNER_TEMP/upload-keystore.jks
       - name: Decode android/key.properties
-        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > $RUNNER_TEMP/android/key.properties
+        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > $RUNNER_TEMP/key.properties
       - name: testing
         run: echo $RUNNER_TEMP
       - uses: actions/checkout@v2
