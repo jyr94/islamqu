@@ -1,11 +1,5 @@
 name: Build Release App Bundle
 
-env:
-  SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-  SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-  SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
-  flutter_versionCode: ${{ vars.FLUTTER_VERSIONCODE }}
-  flutter_versionName: ${{ vars.FLUTTER_VERSIONNAME }}
 on: workflow_dispatch
 
 jobs:
@@ -35,3 +29,12 @@ jobs:
 
       - name: build prod
         run: flutter build appbundle
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Artifacts
+          path: app/build/outputs/
