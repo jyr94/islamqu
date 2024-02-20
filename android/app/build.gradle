@@ -54,7 +54,7 @@ android {
         applicationId "islam.qu.islamqu"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion localProperties.getProperty('flutter_minSdkVersion').toInteger()
+        minSdkVersion localProperties.getProperty('FLUTTER_MINSDKVERSION').toInteger()
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
