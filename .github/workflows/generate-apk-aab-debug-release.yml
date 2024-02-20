@@ -11,7 +11,7 @@ jobs:
       - name: Decode android/upload_key.jks
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > $GITHUB_WORKSPACE/upload-keystore.jks
       - name: Decode android/key.properties
-        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > $GITHUB_WORKSPACE/android/key.properties
+        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > $GITHUB_WORKSPACE/key.properties
       - name: testing
         run: echo $GITHUB_WORKSPACE/key.properties
       - uses: actions/checkout@v2
