@@ -21,7 +21,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.2.4
+          flutter-version: 3.16.7
       - name: Install dependencies
         run: flutter pub get
 
@@ -31,3 +31,6 @@ jobs:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          flutter_minSdkVersion: ${{ vars.FLUTTER_MINSDKVERSION }}
+          flutter_versionCode: ${{ vars.FLUTTER_VERSIONCODE }}
+          flutter_versionName: ${ vars.FLUTTER_VERSIONNAME }}
