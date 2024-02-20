@@ -12,7 +12,7 @@ jobs:
         id: decode_keystore
         uses: timheuer/base64-to-file@v1
         with:
-          fileName: 'keystore/upload-keystore.jks'
+          fileName: 'android/app/upload-keystore.jks'
           encodedString: ${{ secrets.KEYSTORE }}
       - uses: actions/checkout@v2
       - name: set up JDK 11
