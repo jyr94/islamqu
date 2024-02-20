@@ -17,10 +17,16 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v2
+        with:
+          channel: stable
+          version: 3.2.4
+      - name: Install dependencies
+        run: flutter pub get
+
       - name: build prod
-        run: ./gradlew app:bundleRelease
+        run: flutter build appbundle
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
