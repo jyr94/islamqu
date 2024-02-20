@@ -6,7 +6,8 @@ class SquareButton extends StatelessWidget {
   final String label;
   final Icon icon;
   final VoidCallback onPressed;
-  SquareButton({required this.label, required this.icon,required this.onPressed});
+  final MaterialColor btnClr;
+  SquareButton({required this.label, required this.icon,required this.onPressed,required this.btnClr});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class SquareButton extends StatelessWidget {
         SizedBox(
           width: 60.0,
           height: 60.0,
+
           child: CupertinoButton(
             padding: EdgeInsets.zero,
             borderRadius: BorderRadius.circular(20.0),
@@ -23,20 +25,20 @@ class SquareButton extends StatelessWidget {
               onPressed();
             },
             color: buttonCollors,
-            child: Icon(icon.icon, size: 26.0,color: Colors.green,weight: 1000,),
+            child: Icon(icon.icon, size: 30.0,color: btnClr,weight: 1000,),
           ),
 
         ),
-        SizedBox(
-          height: 8.0,
-        ),
+        // SizedBox(
+        //   height: 8.0,
+        // ),
         Container(
           width: 60.0,
           height: 20.0,
           child: Center(
             child: Text(
-              label
-              // style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+              label,
+          style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold,fontSize: 20)
             ),
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:islamqu/model/prayer.dart';
 import 'package:islamqu/helper/analytics.dart';
 import 'package:islamqu/helper/constant.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart';
 class DailyPrayerDetail extends StatefulWidget{
 
   const DailyPrayerDetail({Key? key,required this.dailyPrayer}) : super(key: key);
@@ -49,12 +50,25 @@ class _dailyPrayerDetail extends State<DailyPrayerDetail> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  this.widget.dailyPrayer.arab,
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.scheherazadeNew(
-                      textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 20,letterSpacing: 0.0),),
+                child:
+                // Text(
+                //   this.widget.dailyPrayer.arab,
+                //   textAlign: TextAlign.left,
+                //   style: GoogleFonts.scheherazadeNew(
+                //       textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 20,letterSpacing: 0.0),),
+                // ),
+                RichText(
+                  textAlign: TextAlign.right,
+
+                  text: TextSpan(
+                    text:this.widget.dailyPrayer.arab,
+                    style: GoogleFonts.scheherazadeNew(
+                        textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 20,letterSpacing: 0.0)
+                    ),
+
+                  ),
                 ),
+
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),

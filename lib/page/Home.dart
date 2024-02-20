@@ -29,6 +29,7 @@ import 'package:islamqu/helper/utils.dart';
 import 'package:arabic_numbers/arabic_numbers.dart';
 import 'package:islamqu/page/prayerTime.dart';
 import 'package:islamqu/helper/constant.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -272,7 +273,7 @@ class homePage extends State<HomePage> {
     // print(_notificationService.getActiveNotifications());
     _notificationService.getActiveNotifications().then((value) {
       print("notif");
-      for ( var i in value ) print(i.title);
+      for ( var i in value ) print('${i.title} ${i.payload} ${i.toString()}');
     });
     dailyPrayer=fetchPrayerDaily();
     initializePreference().whenComplete((){
@@ -415,29 +416,33 @@ class homePage extends State<HomePage> {
           //   child: Icon(FlutterIslamicIcons.tasbihHand,size: 50,color: Colors.green[900])
           // ),
           SquareButton(
-            icon: Icon(FlutterIslamicIcons.quran2),
+            icon: Icon(FlutterIslamicIcons.solidQuran2),
             label: 'AlQuran',
+            btnClr: Colors.teal,
             onPressed: (){
               Navigator.of(context).push(_createRoute(ListSurahPage()));
             },
           ),
           SquareButton(
-            icon: Icon(FlutterIslamicIcons.prayer),
+            icon: Icon(FlutterIslamicIcons.solidPrayer),
             label: 'Doa',
+            btnClr: Colors.brown,
             onPressed: (){
               Navigator.of(context).push(_createRoute(DailyPrayerPage()));
             },
           ),
           SquareButton(
-            icon: Icon(FlutterIslamicIcons.qibla),
+            icon: Icon(FlutterIslamicIcons.solidQibla),
             label: 'Qiblat',
+            btnClr: Colors.indigo,
             onPressed: (){
               Navigator.of(context).push(_createRoute(Qiblah()));
             },
           ),
           SquareButton(
-            icon: Icon(FlutterIslamicIcons.kowtow),
+            icon: Icon(FlutterIslamicIcons.solidKowtow),
             label: 'Sholat',
+            btnClr: Colors.blueGrey,
             onPressed: (){
               Navigator.of(context).push(_createRoute(PrayerTime()));
             },
@@ -501,10 +506,24 @@ class homePage extends State<HomePage> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: Text(
-                                 snapshot.requireData[index].arab,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                              child:
+                              // Text(
+                              //    snapshot.requireData[index].arab,
+                              //   textAlign: TextAlign.left,
+                              //   style: GoogleFonts.scheherazadeNew(
+                              //           textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 25,letterSpacing: 0.0)
+                              //       ),
+                              // ),
+                              RichText(
+                                textAlign: TextAlign.right,
+
+                                text: TextSpan(
+                                  text: snapshot.requireData[index].arab,
+                                  style: GoogleFonts.scheherazadeNew(
+                                      textStyle:TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 20,letterSpacing: 0.0)
+                                  ),
+
+                                ),
                               ),
                             ),
                             Padding(
