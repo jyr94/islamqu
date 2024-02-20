@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1077502269810",
+    "project_id": "islam-qu",
+    "storage_bucket": "islam-qu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077502269810:android:35da612c1320f7d43ca5eb",
+        "android_client_info": {
+          "package_name": "islam.qu.islamqu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMcpqEARoO4lguaYHgKrKZ1rHNn_2cK-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

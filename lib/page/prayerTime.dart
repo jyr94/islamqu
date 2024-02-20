@@ -9,6 +9,7 @@ import 'package:adhan/adhan.dart';
 import 'package:intl/intl.dart';
 import 'package:islamqu/model/prayerTime.dart';
 import 'package:islamqu/helper/utils.dart';
+import 'package:islamqu/helper/constant.dart';
 
 class PrayerTime extends StatefulWidget {
   PrayerTime({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class _PrayerTimeState extends State<PrayerTime> {
     final myCoordinates =
     Coordinates(latitude!,longitude!); // Replace with your own location lat, lng.
     final params = CalculationMethod.muslim_world_league.getParameters();
-    params.madhab = Madhab.hanafi;
+    params.madhab = Madhab.shafi;
     print('_getPrayTime');
 
     if (currentPage>0){
@@ -59,6 +60,8 @@ class _PrayerTimeState extends State<PrayerTime> {
       final date = DateComponents.from(now);
       _datePrayer=dateFormatter(now);
       _prayerTimes = PrayerTimes.utc(myCoordinates,date, params);
+      final test = PrayerTimes.today(myCoordinates, params);
+      print(test.asr);
     }
 
 
@@ -89,19 +92,14 @@ class _PrayerTimeState extends State<PrayerTime> {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        // title: Text(
-        //   'Jadwal Sholat',
-        //   style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
-        // ),
         title: Column(children: [
           Text(
-            "Jadwal Sholat",style: TextStyle(color: Colors.green[900],fontWeight: FontWeight.bold),
+            "Jadwal Sholat",style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),
           ),
         Text(
-          preferences?.getString("_city") ?? "",style: TextStyle(color: Colors.green[900],fontSize: 12),
+          preferences?.getString("_prefCurrentAddress") ?? "",style: TextStyle(color: mainColor,fontSize: 12),
         ),
         ]),
-
       ),
       ///A Page View with 3 children
       body: PageView(
@@ -121,8 +119,8 @@ class _PrayerTimeState extends State<PrayerTime> {
             color: Colors.white,
             child: Card(
               color: Colors.white,
-              elevation: 4,
-              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 200),
+              elevation: 0,
+              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 250),
               child:ListView(children: <Widget>[
                 Center(
                     child: Text(
@@ -169,8 +167,8 @@ class _PrayerTimeState extends State<PrayerTime> {
             color: Colors.white,
             child: Card(
               color: Colors.white,
-              elevation: 4,
-              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 200),
+              elevation: 0,
+              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 250),
               child:ListView(children: <Widget>[
                 Center(
                     child: Text(
@@ -216,8 +214,8 @@ class _PrayerTimeState extends State<PrayerTime> {
             color: Colors.white,
             child: Card(
               color: Colors.white,
-              elevation: 4,
-              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 200),
+              elevation: 0,
+              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 250),
               child:ListView(children: <Widget>[
                 Center(
                     child: Text(
@@ -225,6 +223,7 @@ class _PrayerTimeState extends State<PrayerTime> {
                       // 'test',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     )),
+
                 DataTable(
                   columns: [
                     DataColumn(label: Text('Sholat')),

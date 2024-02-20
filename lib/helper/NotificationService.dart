@@ -81,6 +81,10 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
+  Future<List<PendingNotificationRequest>> getActiveNotifications() async {
+   return await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+  }
+
   Future scheduleNotification(
       {int id = 0,
         String? title,
