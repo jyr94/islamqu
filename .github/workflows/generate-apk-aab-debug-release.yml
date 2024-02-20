@@ -12,9 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Create local.properties
-        run : |
-          echo "FLUTTER_MINSDKVERSION=${{ vars.FLUTTER_MINSDKVERSION }}" >> android/local.properties
+      - name: Get local.properties from secrets
+        run: echo "${{secrets.LOCAL_PROPERTIES }}" > $GITHUB_WORKSPACE/local.properties
       - name: Decode Keystore
         id: decode_keystore
         uses: timheuer/base64-to-file@v1
