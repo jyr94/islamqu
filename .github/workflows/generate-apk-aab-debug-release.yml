@@ -20,11 +20,25 @@ jobs:
             echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties
-      - name: read properties
-        uses: madhead/read-java-properties@latest
-        id: all
-        with:
-          file: key.properties
-          all: true
-      - name: print property
-        run: echo ${{ steps.all.outputs.SIGNING_KEY_ALIAS }} # Project
+      - name: Check file existence jks
+        env:
+          FILE: upload-keystore.jks
+        shell: bash
+        run: |
+          if [[ -f $FILE ]]; then
+            echo "$FILE exists!"
+          else
+            echo "$FILE does not exist!"
+          fi
+      - name: Check file existence key
+        env:
+          FILE: key.properties
+        shell: bash
+        run: |
+          if [[ -f $FILE ]]; then
+            echo "$FILE exists!"
+          else
+            echo "$FILE does not exist!"
+          fi
+  
+  
