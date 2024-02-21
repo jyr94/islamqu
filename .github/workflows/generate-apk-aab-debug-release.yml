@@ -35,9 +35,6 @@ jobs:
           else
             echo "$FILE does not exist!"
           fi
-      - name: Get dependencies
-        run: flutter pub get
-
       - name: Start Android Release Build
         run: flutter build appbundle
   
