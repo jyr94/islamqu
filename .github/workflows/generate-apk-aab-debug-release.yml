@@ -20,11 +20,6 @@ jobs:
             echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties    
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.0.0"
-          channel: 'stable'
-          cache: true
       - name: Check file existence key
         env:
           FILE: key.properties
@@ -35,7 +30,15 @@ jobs:
           else
             echo "$FILE does not exist!"
           fi
-      - name: Start Android Release Build
-        run: flutter build appbundle
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.16.7
+      - name: Install dependencies
+        run: flutter pub get
+      
+      - name: Build Android App Bundle
+        run: flutter build appbundle --release
   
   
