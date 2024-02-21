@@ -1,4 +1,4 @@
-name: Build Debug Apk
+name: Build release apk
 
 on: workflow_dispatch
 
@@ -9,6 +9,19 @@ jobs:
       - uses: actions/checkout@v3
       - name: Get local.properties from secrets
         run: echo ${{ steps.plan.outputs.stdout }}
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.KEYSTORE }}
+      - name: Create key.properties
+        run: |
+            echo "KEYSTORE=${{ steps.android_keystore.outputs.filePath }}" >  android/key.properties
+            echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >>  android/key.properties
+            echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >>  android/key.properties
+            echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  android/key.properties
+     
       - name: set up JDK 11
         uses: actions/setup-java@v1
         with:
@@ -21,10 +34,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       
-      - name: Build Android App
+      - name: Build Android App apk
         run: flutter build apk
-      - name: Upload Android APK
+      - name: Upload Android Release
         uses: actions/upload-artifact@v2
         with:
-          name: android-debug
-          path: build/app/outputs/apk/debug/app-debug.apk
+          name: android-release
+          path: build/app/outputs/bundle/release/app-release.apk
