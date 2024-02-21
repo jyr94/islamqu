@@ -16,10 +16,10 @@ jobs:
           encodedString: ${{ secrets.KEYSTORE }}
       - name: Create key.properties
         run: |
-            echo "KEYSTORE=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
-            echo "SIGNING_STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
-            echo "SIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-            echo "SIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+            echo "KEYSTORE=${{ steps.android_keystore.outputs.filePath }}" >  $GITHUB_WORKSPACE/key.properties
+            echo "SIGNING_STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
+            echo "SIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
+            echo "SIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties
       - name: testing
         run: echo $RUNNER_TEMP
       - uses: actions/checkout@v2
