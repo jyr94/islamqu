@@ -20,26 +20,12 @@ jobs:
             echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties
-      - name: testing
-        run: echo $RUNNER_TEMP
-      - uses: actions/checkout@v2
-      - name: set up JDK 11
-        uses: actions/setup-java@v1
+      - name: read properties
+      - uses: madhead/read-java-properties@latest
+        id: version
         with:
-          java-version: 11
-      - name: Setup Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.16.7
-      - name: Install dependencies
-        run: flutter pub get
-      
-      - name: Build Android App Bundle
-        run: flutter build appbundle --release
-
-      - name: Upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: Build Artifacts
-          path: app/build/outputs/
+          file: key.properties
+          property: SIGNING_STORE_PASSWORD
+          default: 0.0.1
+      - name: print property
+        run: echo ${{ steps.version.outputs.value }} # Project
