@@ -59,6 +59,7 @@ class _SettingPage extends State<SettingPage> {
   bool isSwitchedmakrib = false;
   bool isSwitchedisya = false;
   bool isNotifPermision=false;
+  List<String> notifaktif = [];
 
   void _loadBannerAd() {
     _bannerAd = BannerAd(
@@ -221,7 +222,7 @@ class _SettingPage extends State<SettingPage> {
                 now.year, now.month, now.day, ps.fajr.hour, ps.fajr.minute,ps.fajr.second,ps.fajr.millisecond,ps.fajr.microsecond);
             _notificationService.scheduleNotification(
                 id: 1,
-                title: "Masuk Waktu Subuh ${ps.fajr.hour} : ${ps.fajr.minute}",
+                title: "Masuk Waktu Subuh ${ps.fajr.hour}:${ps.fajr.minute}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: fajr);
             return Tuple2(true, "");
@@ -244,7 +245,7 @@ class _SettingPage extends State<SettingPage> {
                 now.year, now.month, now.day, ps.dhuhr.hour, ps.dhuhr.minute,ps.dhuhr.second,ps.dhuhr.millisecond,ps.dhuhr.microsecond);
             _notificationService.scheduleNotification(
                 id: 2,
-                title: "Masuk Waktu Dzuhur ${ps.dhuhr.hour} : ${ps.dhuhr.minute}",
+                title: "Masuk Waktu Dzuhur ${ps.dhuhr.hour}:${ps.dhuhr.minute}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: dhuhr);
             return Tuple2(true, "");
@@ -267,7 +268,7 @@ class _SettingPage extends State<SettingPage> {
             DateTime(now.year, now.month, now.day, ps.asr.hour, ps.asr.minute,ps.asr.second,ps.asr.millisecond,ps.asr.microsecond);
             _notificationService.scheduleNotification(
                 id: 3,
-                title: "Masuk Waktu Ashar ${ps.asr.hour} : ${ps.asr.minute}",
+                title: "Masuk Waktu Ashar ${ps.asr.hour}:${ps.asr.minute}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: asr);
             return Tuple2(true, "");
@@ -292,7 +293,7 @@ class _SettingPage extends State<SettingPage> {
                 now.year, now.month, now.day, ps.maghrib.hour, ps.maghrib.minute,ps.maghrib.second,ps.maghrib.millisecond,ps.maghrib.microsecond);
             _notificationService.scheduleNotification(
                 id: 4,
-                title: "Masuk Waktu Magrib ${ps.maghrib.hour} : ${ps.maghrib.minute}",
+                title: "Masuk Waktu Magrib ${ps.maghrib.hour}:${ps.maghrib.minute}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: maghrib);
             return Tuple2(true, "");
@@ -316,7 +317,7 @@ class _SettingPage extends State<SettingPage> {
                 now.year, now.month, now.day, ps.isha.hour, ps.isha.minute,ps.isha.second,ps.isha.millisecond,ps.isha.microsecond);
             _notificationService.scheduleNotification(
                 id: 5,
-                title: "Masuk Waktu isya ${ps.isha.hour} : ${ps.isha.minute}",
+                title: "Masuk Waktu isya ${ps.isha.hour}:${ps.isha.minute}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: isha);
             return Tuple2(true, "");
@@ -339,7 +340,11 @@ class _SettingPage extends State<SettingPage> {
 
     AnalyticsService.observer.analytics
         .setCurrentScreen(screenName: "setting_page");
-
+    _notificationService.getActiveNotifications().then((value) {
+      for ( var i in value ) {
+        notifaktif.add('${i.title} ${i.payload}');
+      }
+    });
     initializePreference().whenComplete(() {
       setState(() {
         isSwitchedShubuh =
@@ -461,11 +466,14 @@ class _SettingPage extends State<SettingPage> {
                               NotifTest();
                               isSwitchedShubuh = value;
                               print("done on off shubuh");
+
                             });
+
                           } else {
                             showAlert(context, rr.item2);
                           }
                         });
+
                       },
                       activeTrackColor: Colors.blue,
                       // activeColor: Colors.blue,
@@ -483,7 +491,6 @@ class _SettingPage extends State<SettingPage> {
                           if (rr.item1) {
                             setState(() {
                               isSwitchedzuhur = value;
-
                               print("done on off Dhuhr");
                             });
                           }else{
@@ -581,6 +588,7 @@ class _SettingPage extends State<SettingPage> {
                     ),
                   ),
                 ),
+                for ( var i in notifaktif ) Text(i)
               ]
 
             ],
