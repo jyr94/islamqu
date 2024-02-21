@@ -20,16 +20,17 @@ jobs:
             echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties
-      - name: Check file existence jks
-        env:
-          FILE: upload-keystore.jks
-        shell: bash
-        run: |
-          if [[ -f $FILE ]]; then
-            echo "$FILE exists!"
-          else
-            echo "$FILE does not exist!"
-          fi
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: "12.x"
+          cache: gradle
+          
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.0.0"
+          channel: 'stable'
+          cache: true
       - name: Check file existence key
         env:
           FILE: key.properties
@@ -40,5 +41,10 @@ jobs:
           else
             echo "$FILE does not exist!"
           fi
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Start Android Release Build
+        run: flutter build appbundle
   
   
