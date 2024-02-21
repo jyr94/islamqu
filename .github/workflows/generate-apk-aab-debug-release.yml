@@ -6,6 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Get local.properties from secrets
         run: echo ${{ steps.plan.outputs.stdout }}
       - name: Download Android keystore
@@ -20,9 +21,7 @@ jobs:
             echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >>  $GITHUB_WORKSPACE/key.properties
             echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties
-      - name: testing
-        run: echo $RUNNER_TEMP
-      - uses: actions/checkout@v2
+     
       - name: set up JDK 11
         uses: actions/setup-java@v1
         with:
