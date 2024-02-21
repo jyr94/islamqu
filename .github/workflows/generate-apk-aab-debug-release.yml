@@ -8,10 +8,18 @@ jobs:
     steps:
       - name: Get local.properties from secrets
         run: echo "${{secrets.LOCAL_PROPERTIES }}" > $GITHUB_WORKSPACE/local.properties
-      - name: Decode android/upload_key.jks
-        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > $RUNNER_TEMP/upload-keystore.jks
-      - name: Decode android/key.properties
-        run: echo "${{ secrets.KEY_PROPERTIES_PROD }}" | base64 --decode > $RUNNER_TEMP/key.properties
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.KEYSTORE }}
+      - name: Create key.properties
+        run: |
+            echo "KEYSTORE=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+            echo "SIGNING_STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
+            echo "SIGNING_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+            echo "SIGNING_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> android/key.properties
       - name: testing
         run: echo $RUNNER_TEMP
       - uses: actions/checkout@v2
