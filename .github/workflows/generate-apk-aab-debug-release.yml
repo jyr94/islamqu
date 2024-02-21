@@ -22,10 +22,9 @@ jobs:
             echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >>  $GITHUB_WORKSPACE/key.properties
       - name: read properties
         uses: madhead/read-java-properties@latest
-        id: version
+        id: all
         with:
           file: key.properties
-          property: SIGNING_STORE_PASSWORD
-          default: 0.0.1
+          all: true
       - name: print property
-        run: echo ${{ steps.version.outputs.value }} # Project
+        run: echo ${{ steps.all.outputs.value }} # Project
