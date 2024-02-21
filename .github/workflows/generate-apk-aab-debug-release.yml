@@ -27,4 +27,4 @@ jobs:
           file: key.properties
           all: true
       - name: print property
-        run: echo ${{ steps.all.outputs.value }} # Project
+        run: echo ${{ steps.all.outputs.SIGNING_KEY_ALIAS }} # Project
