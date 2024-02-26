@@ -222,7 +222,7 @@ class _SettingPage extends State<SettingPage> {
                 now.year, now.month, now.day, ps.fajr.hour, ps.fajr.minute,ps.fajr.second,ps.fajr.millisecond,ps.fajr.microsecond);
             _notificationService.scheduleNotification(
                 id: 1,
-                title: "Masuk Waktu Subuh ${ps.fajr.hour}:${ps.fajr.minute}",
+                title: "Masuk Waktu Subuh ${reformatInt(ps.fajr.hour)}:${ps.fajr.minute}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: fajr);
             return Tuple2(true, "");
@@ -241,11 +241,12 @@ class _SettingPage extends State<SettingPage> {
         var result = await prayertime().then((ps) {
           DateTime? now = DateTime.now();
           if (value) {
+
             var dhuhr = DateTime(
                 now.year, now.month, now.day, ps.dhuhr.hour, ps.dhuhr.minute,ps.dhuhr.second,ps.dhuhr.millisecond,ps.dhuhr.microsecond);
             _notificationService.scheduleNotification(
                 id: 2,
-                title: "Masuk Waktu Dzuhur ${ps.dhuhr.hour}:${ps.dhuhr.minute}",
+                title: "Masuk Waktu Dzuhur ${ps.dhuhr.hour}:${reformatInt(ps.dhuhr.minute)}",
                 body: "Untuk Daerah ${_currentAddress}",
                 scheduledNotificationDateTime: dhuhr);
             return Tuple2(true, "");
@@ -588,7 +589,7 @@ class _SettingPage extends State<SettingPage> {
                     ),
                   ),
                 ),
-                for ( var i in notifaktif ) Text(i)
+                // for ( var i in notifaktif ) Text(i)
               ]
 
             ],

@@ -16,3 +16,12 @@ String dateFormatter(DateTime date) {
       date.year.toString();
 }
 
+String reformatInt(int value){
+  String nol='0';
+
+  int length = value.toString().length; // 7
+  if (length==1){
+    return '$nol$value'.toString();
+  }
+  return value.toString();
+}
