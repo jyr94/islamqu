@@ -588,7 +588,7 @@ class _SettingPage extends State<SettingPage> {
                     ),
                   ),
                 ),
-                for ( var i in notifaktif ) Text(i)
+                // for ( var i in notifaktif ) Text(i)
               ]
 
             ],
