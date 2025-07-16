@@ -1,45 +1,43 @@
-# 📱 Islamqu
+# 📱 IslamQu
 
-**Islamqu** adalah aplikasi Flutter ringan yang menyediakan fitur-fitur Islami seperti Al-Quran digital, jadwal sholat, arah kiblat, dan kumpulan doa — tanpa perlu backend. Semua data diolah langsung dari sumber terbuka.
+**IslamQu** is a modern Islamic mobile application built with Flutter, designed to support Muslims in their daily worship and spiritual practices.
 
-![Islamqu On playstore]([https://your-screenshot-link.com](https://play.google.com/store/apps/details?id=islam.qu.islamqu)) <!-- opsional -->
-
----
-
-## ✨ Fitur Utama
-
-- 📖 **Al-Qur'an Per Ayat**  
-  Menampilkan ayat demi ayat dalam tampilan yang mudah dibaca dan user-friendly.  
-  Data bersumber dari:  
-  👉 [Al-Quran JSON Indonesia Kemenag](https://github.com/jyr94/Al-Quran-JSON-Indonesia-Kemenag)
-
-- 🕋 **Jadwal Sholat Harian**  
-  Jadwal sholat berdasarkan lokasi pengguna, lengkap dari Subuh hingga Isya.
-
-- 🔔 **Notifikasi Jadwal Sholat**  
-  Pengingat otomatis menjelang waktu sholat.
-
-- 🧭 **Penunjuk Arah Kiblat**  
-  Menggunakan sensor perangkat untuk menunjukkan arah kiblat secara akurat.
-
-- 🙏 **Pencarian Doa-doa Harian**  
-  Kumpulan doa lengkap dan mudah dicari berdasarkan kata kunci.
+> 📥 Available now on [Google Play Store](https://play.google.com/store/apps/details?id=islam.qu.islamqu)
 
 ---
 
-## 🚀 Teknologi
+## 🌟 Features
 
-- Flutter 3.x
-- Tanpa backend (semua data disimpan lokal atau dari sumber terbuka)
-- Permission: GPS (untuk arah kiblat & lokasi jadwal sholat)
-- Push Notification (jadwal sholat)
+- 📖 **Al-Qur'an (Verse-by-Verse)**  
+  Easy-to-read display of each verse, complete with Indonesian translation.
+
+- 🕌 **Prayer Times**  
+  Automatically detects and displays daily prayer times based on your current location.
+
+- 🔔 **Prayer Time Notifications**  
+  Get timely reminders before each prayer begins.
+
+- 🧭 **Qibla Direction**  
+  Built-in Qibla compass using device sensors to find the direction of Mecca.
+
+- 🤲 **Searchable Collection of Duas**  
+  Find various daily duas with an integrated keyword-based search feature.
 
 ---
 
-## 📦 Instalasi
+## 🔗 Data Source
+
+- 📚 Al-Qur’an and translation data is powered by:  
+  [`Al-Quran-JSON-Indonesia-Kemenag`](https://github.com/jyr94/Al-Quran-JSON-Indonesia-Kemenag)
+
+> This app works **100% offline** and does **not require a backend**.
+
+---
+
+## 🚀 Getting Started
 
 ```bash
-git clone https://github.com/username/islamqu.git
+git clone https://github.com/yourusername/islamqu.git
 cd islamqu
 flutter pub get
 flutter run
