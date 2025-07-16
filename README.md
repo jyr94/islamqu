@@ -1,16 +1,45 @@
-# islamqu
+# 📱 Islamqu
 
-IslamQu
+**Islamqu** adalah aplikasi Flutter ringan yang menyediakan fitur-fitur Islami seperti Al-Quran digital, jadwal sholat, arah kiblat, dan kumpulan doa — tanpa perlu backend. Semua data diolah langsung dari sumber terbuka.
 
-## Getting Started
+![Islamqu On playstore]([https://your-screenshot-link.com](https://play.google.com/store/apps/details?id=islam.qu.islamqu)) <!-- opsional -->
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## ✨ Fitur Utama
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- 📖 **Al-Qur'an Per Ayat**  
+  Menampilkan ayat demi ayat dalam tampilan yang mudah dibaca dan user-friendly.  
+  Data bersumber dari:  
+  👉 [Al-Quran JSON Indonesia Kemenag](https://github.com/jyr94/Al-Quran-JSON-Indonesia-Kemenag)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- 🕋 **Jadwal Sholat Harian**  
+  Jadwal sholat berdasarkan lokasi pengguna, lengkap dari Subuh hingga Isya.
+
+- 🔔 **Notifikasi Jadwal Sholat**  
+  Pengingat otomatis menjelang waktu sholat.
+
+- 🧭 **Penunjuk Arah Kiblat**  
+  Menggunakan sensor perangkat untuk menunjukkan arah kiblat secara akurat.
+
+- 🙏 **Pencarian Doa-doa Harian**  
+  Kumpulan doa lengkap dan mudah dicari berdasarkan kata kunci.
+
+---
+
+## 🚀 Teknologi
+
+- Flutter 3.x
+- Tanpa backend (semua data disimpan lokal atau dari sumber terbuka)
+- Permission: GPS (untuk arah kiblat & lokasi jadwal sholat)
+- Push Notification (jadwal sholat)
+
+---
+
+## 📦 Instalasi
+
+```bash
+git clone https://github.com/username/islamqu.git
+cd islamqu
+flutter pub get
+flutter run
