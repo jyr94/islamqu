@@ -68,6 +68,7 @@ class _SettingPage extends State<SettingPage> {
       size: AdSize.mediumRectangle,
       listener: BannerAdListener(
         onAdLoaded: (_) {
+          if (!mounted) return;
           setState(() {
             _isBannerAdReady = true;
           });
@@ -108,6 +109,7 @@ class _SettingPage extends State<SettingPage> {
     if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
+      if (!mounted) return;
       setState(() => _currentPosition = position);
       print(position);
       _getAddressFromLatLng(_currentPosition!);
@@ -121,6 +123,7 @@ class _SettingPage extends State<SettingPage> {
     await placemarkFromCoordinates(
             _currentPosition!.latitude, _currentPosition!.longitude)
         .then((List<Placemark> placemarks) {
+      if (!mounted) return;
       Placemark place = placemarks[0];
 
       final myCoordinates = Coordinates(
@@ -347,6 +350,7 @@ class _SettingPage extends State<SettingPage> {
       }
     });
     initializePreference().whenComplete(() {
+      if (!mounted) return;
       setState(() {
         isSwitchedShubuh =
             this.preferences?.getBool('_isSwitchedShubuh') ?? false;
@@ -411,6 +415,7 @@ class _SettingPage extends State<SettingPage> {
                   showLoaderDialog(context);
                   requestLocation().whenComplete(() {
                     print("okksss");
+                    if (!mounted) return;
                     setState(() {
                       _currentAddress =
                           this.preferences?.getString("_prefCurrentAddress");
@@ -438,6 +443,7 @@ class _SettingPage extends State<SettingPage> {
                       value: isNotifPermision,
                       onChanged: (value){
                         _permissionNotif(value).then((tt){
+                          if (!mounted) return;
                           if(tt.item1){
                             setState(() {
                               print('ttttt ${tt.item1}');
@@ -462,6 +468,7 @@ class _SettingPage extends State<SettingPage> {
                       value: isSwitchedShubuh,
                       onChanged: (value) {
                         setAdzanShubuh(value).then((Tuple2 rr) {
+                          if (!mounted) return;
                           if (rr.item1) {
                             setState(() {
                               NotifTest();
@@ -489,6 +496,7 @@ class _SettingPage extends State<SettingPage> {
                       value: isSwitchedzuhur,
                       onChanged: (value) {
                         setAdzanZuhur(value).then((Tuple2 rr) {
+                          if (!mounted) return;
                           if (rr.item1) {
                             setState(() {
                               isSwitchedzuhur = value;
@@ -514,6 +522,7 @@ class _SettingPage extends State<SettingPage> {
                       value: isSwitchedashar,
                       onChanged: (value) {
                         setAdzanAshar(value).then((Tuple2 rr) {
+                          if (!mounted) return;
                           if (rr.item1){
                             setState(() {
                               isSwitchedashar = value;
@@ -542,6 +551,7 @@ class _SettingPage extends State<SettingPage> {
                       onChanged: (value) {
 
                         setAdzanMakrib(value).then((Tuple2 rr) {
+                          if (!mounted) return;
                           if(rr.item1){
                             setState(() {
                               isSwitchedmakrib = value;
@@ -570,6 +580,7 @@ class _SettingPage extends State<SettingPage> {
                       value: isSwitchedisya,
                       onChanged: (value) {
                         setAdzanIsya(value).then((Tuple2 rr) {
+                          if (!mounted) return;
                           if(rr.item1){
                             setState(() {
                               isSwitchedisya = value;

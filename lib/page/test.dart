@@ -55,6 +55,7 @@ class _LocationPageState extends State<LocationPage> {
     if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
+      if (!mounted) return;
       setState(() => _currentPosition = position);
       _getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
@@ -66,6 +67,7 @@ class _LocationPageState extends State<LocationPage> {
     await placemarkFromCoordinates(
         _currentPosition!.latitude, _currentPosition!.longitude)
         .then((List<Placemark> placemarks) {
+      if (!mounted) return;
       Placemark place = placemarks[0];
       setState(() {
         _currentAddress =

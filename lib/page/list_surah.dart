@@ -35,6 +35,7 @@ class _ListSurahPage extends State<ListSurahPage> {
   void allSurahToList() async{
     var temp=await readJsonAllSurah();
     print(temp.length);
+    if (!mounted) return;
     setState(() {
       items=temp;
     });
@@ -49,6 +50,7 @@ class _ListSurahPage extends State<ListSurahPage> {
       size: AdSize.mediumRectangle,
       listener: BannerAdListener(
         onAdLoaded: (_) {
+          if (!mounted) return;
           setState(() {
             _isBannerAdReady = true;
           });
@@ -94,6 +96,7 @@ class _ListSurahPage extends State<ListSurahPage> {
     _bookmarkSurah=null;
     AnalyticsService.observer.analytics.setCurrentScreen(screenName: "list_surah");
     initializePreference().whenComplete((){
+      if (!mounted) return;
       setState(() {
         refreshbookmark();
       });

@@ -72,6 +72,7 @@ class _PrayerTimeState extends State<PrayerTime> {
     super.initState();
 
     initializePreference().whenComplete((){
+      if (!mounted) return;
       setState(() {
         _getPrayTime(preferences?.getDouble("_preflatitude"),preferences?.getDouble("_preflongitude"));
         print(_prayerTimeModel.datePrayer);

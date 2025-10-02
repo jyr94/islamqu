@@ -25,6 +25,7 @@ class _DailyPrayer extends State<DailyPrayerPage> {
   void dailyPrayertoList() async{
     var temp=await fetchPrayerDailyAll();
     print(temp.length);
+    if (!mounted) return;
     setState(() {
       items=temp;
     });
@@ -38,6 +39,7 @@ class _DailyPrayer extends State<DailyPrayerPage> {
       size: AdSize.mediumRectangle,
       listener: BannerAdListener(
         onAdLoaded: (_) {
+          if (!mounted) return;
           setState(() {
             _isBannerAdReady = true;
           });
