@@ -42,6 +42,7 @@ class homePage extends State<HomePage> {
   NotificationService _notificationService = NotificationService();
   late BannerAd _bannerAd;
   bool _isBannerAdReady = false;
+  late final ScrollController _controller;
   SharedPreferences? preferences;
   String? _currentAddress;
   Position? _currentPosition;
@@ -264,6 +265,7 @@ class homePage extends State<HomePage> {
 
   @override
   void initState() {
+    _controller = ScrollController();
     super.initState();
     AnalyticsService.observer.analytics.setCurrentScreen(screenName: "main2");
     // _loadBannerAd();
@@ -299,13 +301,13 @@ class homePage extends State<HomePage> {
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
     // _bannerAd.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScrollController _controller = new ScrollController();
     Widget titleSections = Container(
       // color: Colors.red,
       padding: const EdgeInsets.all(10),
