@@ -24,62 +24,68 @@ class _PrayerTimeState extends State<PrayerTime> {
   SharedPreferences? preferences;
   String? _nextPrayerName;
   String? _nextPrayer;
-  PrayerTimes? _prayerTimes;
-  final _prayerTimeModel= PrayerTimeModel();
-  int currentPage=0;
-  String? _datePrayer;
+  final _prayerTimeModel = PrayerTimeModel();
+  int currentPage = 0;
+  static const int _totalPages = 3;
+  final Map<int, _PrayerPageData> _prayerDataCache = {};
+  Coordinates? _coordinates;
+  late final CalculationParameters _calculationParameters;
 
-  DateTime now =new DateTime.now();
+  DateTime now = DateTime.now();
   ///Page Controller for the PageView
   final controller = PageController(
     initialPage: 0,
   );
 
-  Future<void>initializePreference() async {
-    this.preferences = await SharedPreferences.getInstance();
-    this.preferences?.setString("name", "Peter");
+  Future<void> initializePreference() async {
+    preferences = await SharedPreferences.getInstance();
+    preferences?.setString("name", "Peter");
   }
-  Future<void> _getPrayTime(double? latitude,longitude) async {
-    // print('testing,$latitude');
-    final myCoordinates =
-    Coordinates(latitude!,longitude!); // Replace with your own location lat, lng.
+
+  void _initializePrayerConfig() {
     final params = CalculationMethod.muslim_world_league.getParameters();
     params.madhab = Madhab.shafi;
-    print('_getPrayTime');
+    _calculationParameters = params;
+  }
 
-    if (currentPage>0){
-      print(currentPage);
-      final nextDay=now.add(Duration(days: currentPage));
-      final date = DateComponents.from(nextDay);
-
-      _datePrayer=dateFormatter(nextDay);
-      _prayerTimes = PrayerTimes.utc(myCoordinates, date,params);
-      print(_datePrayer);
-      print(_prayerTimes?.dhuhr);
-    }else{
-      final date = DateComponents.from(now);
-      _datePrayer=dateFormatter(now);
-      _prayerTimes = PrayerTimes.utc(myCoordinates,date, params);
-      final test = PrayerTimes.today(myCoordinates, params);
-      print(test.asr);
+  void _cachePrayerData(int page) {
+    if (_coordinates == null || _prayerDataCache.containsKey(page)) {
+      return;
     }
+    final targetDate = now.add(Duration(days: page));
+    final dateComponents = DateComponents.from(targetDate);
+    final prayerTimes = PrayerTimes.utc(
+      _coordinates!,
+      dateComponents,
+      _calculationParameters,
+    );
+    _prayerDataCache[page] = _PrayerPageData(
+      date: dateFormatter(targetDate),
+      prayerTimes: prayerTimes,
+    );
+  }
 
-
-
+  void _initializePrayerData() {
+    final latitude = preferences?.getDouble("_preflatitude");
+    final longitude = preferences?.getDouble("_preflongitude");
+    if (latitude != null && longitude != null) {
+      setState(() {
+        _coordinates = Coordinates(latitude, longitude);
+        _cachePrayerData(currentPage);
+      });
+    } else {
+      setState(() {});
+    }
   }
   @override
   void initState() {
     super.initState();
+    _initializePrayerConfig();
 
-    initializePreference().whenComplete((){
+    initializePreference().then((_) {
       if (!mounted) return;
-      setState(() {
-        _getPrayTime(preferences?.getDouble("_preflatitude"),preferences?.getDouble("_preflongitude"));
-        print(_prayerTimeModel.datePrayer);
-        // _getPrayTime(preferences?.getDouble("_preflatitude"), preferences?.getDouble("_preflongitude"));
-      });
+      _initializePrayerData();
     });
-
   }
   @override
   void dispose() {
@@ -88,181 +94,112 @@ class _PrayerTimeState extends State<PrayerTime> {
 
   @override
   Widget build(BuildContext context) {
-    Size _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Column(children: [
-          Text(
-            "Jadwal Sholat",style: TextStyle(color: mainColor,fontWeight: FontWeight.bold),
-          ),
-        Text(
-          preferences?.getString("_prefCurrentAddress") ?? "",style: TextStyle(color: mainColor,fontSize: 12),
+        title: Column(
+          children: [
+            Text(
+              "Jadwal Sholat",
+              style: TextStyle(color: mainColor, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              preferences?.getString("_prefCurrentAddress") ?? "",
+              style: TextStyle(color: mainColor, fontSize: 12),
+            ),
+          ],
         ),
-        ]),
       ),
-      ///A Page View with 3 children
-      body: PageView(
+      body: PageView.builder(
         controller: controller,
-        scrollDirection:  Axis.horizontal,
-        onPageChanged: (page){
-          currentPage=page;
+        scrollDirection: Axis.horizontal,
+        onPageChanged: (page) {
           setState(() {
-            _getPrayTime(preferences?.getDouble("_preflatitude"),
-                preferences?.getDouble("_preflongitude"));
+            currentPage = page;
+            _cachePrayerData(page);
           });
         },
         physics: BouncingScrollPhysics(),
         pageSnapping: true,
-        children: <Widget>[
-          Container(
-            color: Colors.white,
-            child: Card(
+        itemCount: _totalPages,
+        itemBuilder: (context, index) {
+          final data = _prayerDataCache[index];
+          if (data == null) {
+            return Container(
               color: Colors.white,
-              elevation: 0,
-              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 250),
-              child:ListView(children: <Widget>[
-                Center(
-                    child: Text(
-                      _datePrayer ?? "",
-                      // 'test',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )),
-                DataTable(
-                  columns: [
-                    DataColumn(label: Text('Sholat')),
-                    DataColumn(label: Text('Waktu')),
-                  ],
-                  rows: [
-                    DataRow(cells: [
-                      DataCell(Text('Shubuh')),
-                      DataCell(Text(_prayerTimes?.fajr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.fajr.toLocal()))),
-
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('dhuhr')),
-                      DataCell(Text(_prayerTimes?.dhuhr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.dhuhr.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('azhar')),
-                      DataCell(Text(_prayerTimes?.asr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.asr.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('maghrib')),
-                      DataCell(Text(_prayerTimes?.maghrib==null ? '-' : DateFormat.Hm().format(_prayerTimes!.maghrib.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('isha')),
-                      DataCell(Text(_prayerTimes?.isha==null ? '-' : DateFormat.Hm().format(_prayerTimes!.isha.toLocal()))),
-                    ]),
-
-                  ],
-                ),
-              ]
-
-            ),
-          ),
-          ),
-          Container(
-            color: Colors.white,
-            child: Card(
-              color: Colors.white,
-              elevation: 0,
-              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 250),
-              child:ListView(children: <Widget>[
-                Center(
-                    child: Text(
-                      _datePrayer ?? "",
-                      // 'test',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )),
-                DataTable(
-                  columns: [
-                    DataColumn(label: Text('Sholat')),
-                    DataColumn(label: Text('Waktu')),
-                  ],
-                  rows: [
-                    DataRow(cells: [
-                      DataCell(Text('Shubuh')),
-                      DataCell(Text(_prayerTimes?.fajr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.fajr.toLocal()))),
-
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('dhuhr')),
-                      DataCell(Text(_prayerTimes?.dhuhr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.dhuhr.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('azhar')),
-                      DataCell(Text(_prayerTimes?.asr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.asr.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('maghrib')),
-                      DataCell(Text(_prayerTimes?.maghrib==null ? '-' : DateFormat.Hm().format(_prayerTimes!.maghrib.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('isha')),
-                      DataCell(Text(_prayerTimes?.isha==null ? '-' : DateFormat.Hm().format(_prayerTimes!.isha.toLocal()))),
-                    ]),
-
-                  ],
-                ),
-              ]
-            ),
-          ),
-          ),
-          Container(
-            color: Colors.white,
-            child: Card(
-              color: Colors.white,
-              elevation: 0,
-              margin: EdgeInsets.only(top: 24,left: 24,right: 24,bottom: 250),
-              child:ListView(children: <Widget>[
-                Center(
-                    child: Text(
-                      _datePrayer ?? "",
-                      // 'test',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    )),
-
-                DataTable(
-                  columns: [
-                    DataColumn(label: Text('Sholat')),
-                    DataColumn(label: Text('Waktu')),
-                  ],
-                  rows: [
-                    DataRow(cells: [
-                      DataCell(Text('Shubuh')),
-                      DataCell(Text(_prayerTimes?.fajr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.fajr.toLocal()))),
-
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('dhuhr')),
-                      DataCell(Text(_prayerTimes?.dhuhr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.dhuhr.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('azhar')),
-                      DataCell(Text(_prayerTimes?.asr==null ? '-' : DateFormat.Hm().format(_prayerTimes!.asr.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('maghrib')),
-                      DataCell(Text(_prayerTimes?.maghrib==null ? '-' : DateFormat.Hm().format(_prayerTimes!.maghrib.toLocal()))),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('isha')),
-                      DataCell(Text(_prayerTimes?.isha==null ? '-' : DateFormat.Hm().format(_prayerTimes!.isha.toLocal()))),
-                    ]),
-
-                  ],
-                ),
-              ]
-            ),
-          ),
-          ),
-        ],
-
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          return _buildPrayerCard(
+            date: data.date,
+            prayerTimes: data.prayerTimes,
+          );
+        },
       ),
 
     );
   }
+
+  Widget _buildPrayerCard({
+    required String date,
+    required PrayerTimes prayerTimes,
+  }) {
+    return Container(
+      color: Colors.white,
+      child: Card(
+        color: Colors.white,
+        elevation: 0,
+        margin: EdgeInsets.only(top: 24, left: 24, right: 24, bottom: 250),
+        child: ListView(
+          children: <Widget>[
+            Center(
+              child: Text(
+                date,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            DataTable(
+              columns: const [
+                DataColumn(label: Text('Sholat')),
+                DataColumn(label: Text('Waktu')),
+              ],
+              rows: [
+                _buildPrayerRow('Shubuh', prayerTimes.fajr),
+                _buildPrayerRow('dhuhr', prayerTimes.dhuhr),
+                _buildPrayerRow('azhar', prayerTimes.asr),
+                _buildPrayerRow('maghrib', prayerTimes.maghrib),
+                _buildPrayerRow('isha', prayerTimes.isha),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  DataRow _buildPrayerRow(String title, DateTime time) {
+    return DataRow(
+      cells: [
+        DataCell(Text(title)),
+        DataCell(Text(_formatPrayerTime(time))),
+      ],
+    );
+  }
+
+  String _formatPrayerTime(DateTime prayerTime) {
+    return DateFormat.Hm().format(prayerTime.toLocal());
+  }
+}
+
+class _PrayerPageData {
+  final String date;
+  final PrayerTimes prayerTimes;
+
+  _PrayerPageData({
+    required this.date,
+    required this.prayerTimes,
+  });
 }
