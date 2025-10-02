@@ -66,6 +66,7 @@ class homePage extends State<HomePage> {
       size: AdSize.mediumRectangle,
       listener: BannerAdListener(
         onAdLoaded: (_) {
+          if (!mounted) return;
           setState(() {
             _isBannerAdReady = true;
           });
@@ -279,6 +280,7 @@ class homePage extends State<HomePage> {
     });
     dailyPrayer=fetchPrayerDaily();
     initializePreference().whenComplete((){
+      if (!mounted) return;
       setState(() {
         _currentAddress=this.preferences?.getString("_prefCurrentAddress");
         print(preferences?.getString("name"));

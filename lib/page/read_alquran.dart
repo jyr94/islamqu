@@ -91,6 +91,7 @@ class _ReadQuranPage extends State<ReadQuranPage> {
       size: AdSize.mediumRectangle,
       listener: BannerAdListener(
         onAdLoaded: (_) {
+          if (!mounted) return;
           setState(() {
             _isBannerAdReady = true;
           });
@@ -115,6 +116,7 @@ class _ReadQuranPage extends State<ReadQuranPage> {
     super.initState();
     AnalyticsService.observer.analytics.setCurrentScreen(screenName: "read_quran");
     initializePreference().whenComplete((){
+      if (!mounted) return;
       setState(() {
         _bookmarkAyat=preferences?.getInt("_bookmarkAyat");
         _bookmarkSurah=preferences?.getInt("_bookmarkSurah");
@@ -122,6 +124,7 @@ class _ReadQuranPage extends State<ReadQuranPage> {
       });
     });
     allSurahToList().then((value){
+      if (!mounted) return;
       setState(() {
         _isLoading=false;
         items=value;
